@@ -15,7 +15,7 @@ router.get('/register', authorization.soloPublico, (req, res) => {
 router.get('/cliente',authorization.soloCliente, (req, res) => {
     res.status(200).send(cliente)
 })
-router.get('/empleado', (req, res) => {
+router.get('/empleado', authorization.soloCliente, (req, res) => {
     res.status(200).send(empleado)
 })
 router.get('/administrador', (req, res) => {

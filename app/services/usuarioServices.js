@@ -6,8 +6,8 @@ export default class UsuarioServices {
         this.usuario = new Usuario()
     }
 
-    obtenerId = (usuario) => {
-        return this.usuario.obtenerId(usuario)
+    obtenerDatos = (usuario) => {
+        return this.usuario.obtenerDatos(usuario)
     }
 
     register = (usuario) => {

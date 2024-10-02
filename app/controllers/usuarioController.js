@@ -61,8 +61,9 @@ export default class UsuarioController {
 
         try {
             const usuarioLogin = await this.service.iniciarSesion(usuario);
-            const idUsuario = await this.service.obtenerId(usuario)
-            const token = jsonWebToken.sign({idUsuario: idUsuario, nombre: usuario.nombre}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRATION})
+            const datos = await this.service.obtenerDatos(usuario)
+            // const idUsuario = await this.service.obtenerDescripcion(usuario)
+            const token = jsonWebToken.sign({idUsuario: datos.idUsuario, nombre: usuario.nombre, descripcion: datos.descripcion}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRATION})
             const cookieOption = {
                 path: '/'
             }
@@ -115,7 +116,9 @@ export default class UsuarioController {
     }
     
     obtenerReclamo = async (req, res) => {
-        const idUsuarioCreador = authorization.revisarCookie(req);
+        const usuario = authorization.revisarCookie(req);
+        console.log(usuario)
+        const idUsuarioCreador = usuario.idUsuario
         try {
             const reclamoObtenido = await this.service.obtenerReclamo(idUsuarioCreador)
             // console.log(reclamoObtenido)
