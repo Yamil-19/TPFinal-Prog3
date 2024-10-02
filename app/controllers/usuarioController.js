@@ -56,7 +56,7 @@ export default class UsuarioController {
 
         const usuario = {
             nombre: body.nombre,
-            contrasenia: body.contrasenia,
+            contrasenia: body.contrasenia
         };
 
         try {
@@ -120,6 +120,23 @@ export default class UsuarioController {
             const reclamoObtenido = await this.service.obtenerReclamo(idUsuarioCreador)
             // console.log(reclamoObtenido)
             res.status(200).send(reclamoObtenido);
+        } catch (error){
+            res
+            .status(error?.status || 500)
+            .send({ status: "Fallo", data: { error: error?.message || error } });
+        }
+    }
+
+    cancelarReclamo = async (req, res) => {
+        const idReclamoEstado = req.params.idReclamoEstado
+        console.log('Hasta aca llego:', idReclamoEstado)
+        if (!idReclamoEstado) {
+            res.status(404).send({ status: "Fallo", data: { error: "El parámetro idReclamoEstado no puede ser vacío." } })
+        }
+        try {
+            const reclamoCancelado = await this.service.cancelarReclamo(idReclamoEstado)
+            // console.log(reclamoObtenido)
+            res.status(200).send(reclamoCancelado);
         } catch (error){
             res
             .status(error?.status || 500)

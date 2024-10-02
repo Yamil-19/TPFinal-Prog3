@@ -6,10 +6,10 @@ import { method as authorization } from '../../middlewares/methods.js'
 const usuarioController = new UsuarioController()
 const router = express.Router()
 
-router.get('/', authorization.soloPubico ,(req, res) => {
+router.get('/', authorization.soloPublico ,(req, res) => {
     res.status(200).send(login)
 })
-router.get('/register', authorization.soloPubico, (req, res) => {
+router.get('/register', authorization.soloPublico, (req, res) => {
     res.status(200).send(register)
 })
 router.get('/cliente',authorization.soloCliente, (req, res) => {
@@ -23,6 +23,7 @@ router.get('/administrador', (req, res) => {
 })
 
 router.get('/cliente/reclamo',authorization.soloCliente, usuarioController.obtenerReclamo)
+router.patch('/cliente/reclamo/:idReclamoEstado',authorization.soloCliente, usuarioController.cancelarReclamo)
 
 router.post('/register', usuarioController.register)
 router.post('/login', usuarioController.iniciarSesion)

@@ -29,4 +29,8 @@ export default class UsuarioServices {
     obtenerReclamo = (idUsuario) => {
         return this.usuario.obtenerReclamo(idUsuario)
     }
+
+    cancelarReclamo = (idReclamoEstado) => {
+        return this.usuario.cancelarReclamo(idReclamoEstado)
+    }
 }

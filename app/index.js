@@ -7,10 +7,6 @@ import { fileURLToPath } from "url";
 
 import { router as v1Router } from './v1/routes/routes.js'
 
-import { method as authorization } from "./middlewares/methods.js";
-
-
-
 const app = express()
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 

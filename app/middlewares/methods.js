@@ -9,7 +9,7 @@ function soloCliente(req, res, next) {
     return res.redirect('/')
 }
 
-function soloPubico(req, res, next) {
+function soloPublico(req, res, next) {
     const logueado = revisarCookie(req)
     if (!logueado) return next();
     
@@ -22,7 +22,6 @@ function revisarCookie(req){
         const cookieJWT =  req.headers.cookie.split('; ').find(cookie => cookie.startsWith('jwt=')).slice(4)
         // console.log(cookieJWT)
         const decodificado = jsonwebtoken.verify(cookieJWT, process.env.JWT_SECRET)
-        // console.log(decodificado)
         return decodificado.idUsuario
     } catch {
         return false
@@ -31,6 +30,6 @@ function revisarCookie(req){
 
 export const method = {
     soloCliente, 
-    soloPubico,
+    soloPublico,
     revisarCookie
 }

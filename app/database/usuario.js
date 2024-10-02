@@ -25,22 +25,28 @@ export default class Usuario {
     
 
     obtenerId = async ({nombre, contrasenia}) => {
-        const sql = 'SELECT contrasenia, idUsuario FROM usuarios WHERE nombre = ?';
-        const [resultado] = await this.conexion.query(sql, [nombre])
-        if (resultado.length === 0) {
-            console.log('Usuario no encontrado')
-            return res.send('Usuario no encontrado');
+        try {
+            const sql = 'SELECT contrasenia, idUsuario FROM usuarios WHERE nombre = ?';
+            const [resultado] = await this.conexion.query(sql, [nombre])
+            if (resultado.length === 0) {
+                console.log('Usuario no encontrado')
+                return res.send('Usuario no encontrado');
+            }
+    
+            const contraseñaAlmacenada = resultado[0].contrasenia;
+            const idUsuario = resultado[0].idUsuario
+    
+            const contraCorrecta= await bcryptjs.compare(contrasenia, contraseñaAlmacenada)
+            if (contraCorrecta) {
+                return idUsuario
+            } else {
+                console.log('Contraseña incorrecta')
+            };  
+        } catch (error) {
+            console.log('Error al obtener el ID')
+            throw new Error("Error al obtener el ID");
+            
         }
-
-        const contraseñaAlmacenada = resultado[0].contrasenia;
-        const idUsuario = resultado[0].idUsuario
-
-        const contraCorrecta= await bcryptjs.compare(contrasenia, contraseñaAlmacenada)
-        if (contraCorrecta) {
-            return idUsuario
-        } else {
-            console.log('Contraseña incorrecta')
-        };  
     }
 
     findById = async (usuarioId) => {
@@ -48,7 +54,7 @@ export default class Usuario {
         const sql = `SELECT idUsuario, nombre, apellido, correoElectronico, contrasenia FROM usuarios WHERE idUsuario = ?`
 
         const [rows] = await this.conexion.query(sql, [usuarioId])
-        console.log(rows)
+        // console.log(rows)
 
         return (rows.length > 0)? rows[0] : null;
     }
@@ -69,7 +75,6 @@ export default class Usuario {
                 
             const [resultado2] = await this.conexion.query(sql2, [nombre, apellido, correoElectronico, constraseñaHasheada, idTipoUsuario, imagen, activo])
 
-            
             const [rows] = await this.conexion.query('SELECT LAST_INSERT_ID() AS idUsuario');
     
             return await this.findById(rows[0].idUsuario);
@@ -85,6 +90,7 @@ export default class Usuario {
         const sql2 = 'SELECT descripcion FROM usuariostipo WHERE idUsuarioTipo = ?';
 
         const [resultado] = await this.conexion.query(sql, [nombre])
+        console.log(resultado)
             
         if (resultado.length === 0) {
             console.log('Usuario no encontrado')
@@ -95,11 +101,14 @@ export default class Usuario {
         const idUsuarioTipo = resultado[0].idTipoUsuario
         
         const contraCorrecta= await bcryptjs.compare(contrasenia, contraseñaAlmacenada)
+        console.log(contraCorrecta)
         
         if (contraCorrecta) {
             const [resultado2] = await this.conexion.query(sql2, [idUsuarioTipo])
+            console.log(resultado2)
             
             const descripcion = resultado2[0].descripcion
+            console.log(descripcion)
             if (descripcion === 'Cliente') {
                 return '/api/cliente'
             }
@@ -137,16 +146,27 @@ export default class Usuario {
     obtenerReclamo = async (idUsuario) => {
         try {
             const sql = `SELECT asunto, descripcion, fechaCreado, fechaFinalizado, fechaCancelado, idUsuarioFinalizador, idReclamoEstado FROM reclamos WHERE idUsuarioCreador = ?`
-            const sql2 = `SELECT descripcion, activo FROM reclamosestado WHERE idReclamoEstado = ?`
             const [resultado] = await this.conexion.query(sql, [idUsuario])
-            // console.log(resultado[0].idReclamoEstado)
-            const [resultado2] = await this.conexion.query(sql2, [resultado[0].idReclamoEstado])
-
             return resultado
-
         } catch (error) {
             console.log('Error al obtener el reclamo: ', error)
             throw new Error('Error al obtener el reclamo')
+        }
+    }
+    
+    cancelarReclamo = async (idReclamoEstado) => {
+        console.log('Hasta aca llego 2:', idReclamoEstado)
+        try {
+            const sql = `SELECT descripcion FROM reclamosestado WHERE idReclamoEstado = ? AND activo = ?`
+            const sql2 = `UPDATE reclamosestado SET descripcion = ?, activo = ? WHERE idReclamoEstado = ?`
+            const [resultado2] = await this.conexion.query(sql, [idReclamoEstado, 1])
+            console.log(resultado2)
+            const [resultado3] = await this.conexion.query(sql2, ['Cancelado', 0, idReclamoEstado])
+            console.log(resultado3)
+        
+        } catch (error) {
+            console.log('Error al cancelar el reclamo: ', error)
+            throw new Error('Error al cancelar el reclamo')
         }
     }
 }

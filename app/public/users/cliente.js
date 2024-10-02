@@ -1,7 +1,4 @@
-// const tr = document.createElement('tr')
-// const table = document.getElementById('datos')
-// const td = document.createElement('td')
-// const listaDatos = [...tr]
+
 document.getElementById('reclamoCliente-form').addEventListener("submit", async (e) => {
     e.preventDefault()
     try {
@@ -29,6 +26,7 @@ document.getElementById('cerrarSesion').addEventListener("click", () => {
     document.location.href = '/api/';
 })
 
+
 const obtenerReclamo = async () => {
     const response = await fetch("http://localhost:3000/api/cliente/reclamo")
     if (!response.ok) {
@@ -36,7 +34,8 @@ const obtenerReclamo = async () => {
     } else {
         const data = await response.json()
         const tbody = document.querySelector('#tabla_datos')
-        
+        tbody.innerHTML = ''
+
         data.forEach((dato) => {
             const tr = document.createElement('tr')
             const tdAsunto = document.createElement('td')
@@ -49,8 +48,12 @@ const obtenerReclamo = async () => {
             tdDescripcion.textContent = dato.descripcion
             tdFechaCreado.textContent = dato.fechaCreado
             btnCancelar.textContent = 'Cancelar'
-
+            
             btnCancelar.className = 'boton_cancelar'
+            
+            btnCancelar.addEventListener('click', async () => {
+                await cancelarReclamo(dato.idReclamoEstado, tr)
+            })
 
             tdCancelar.appendChild(btnCancelar)
             tr.appendChild(tdAsunto)
@@ -59,8 +62,30 @@ const obtenerReclamo = async () => {
             tr.appendChild(btnCancelar)
             tbody.appendChild(tr);
         })
-        
     }
 }
+const cancelarReclamo = async (idReclamo, reclamo) => {
+    try {
+        const response = await fetch(`http://localhost:3000/api/cliente/reclamo/${idReclamo}`, {
+            method: 'PATCH',
+            headers:  {'Content-Type' : 'application/json'} ,
+            body: JSON.stringify({
+                descripcion: 'Cancelado',
+                activo: 0
+            })
+            })
+        if (!response) {
+            console.log('Error al cancelar el reclamo')
+        } else {
+            alert(`Reclamo ${idReclamo} cancelado correctamente`)
+            
+            reclamo.innerHTML = ''
+        }
+    } catch (error){
+        console.log('Error al cancelar el reclamo: ', error)
+    }
+    
+}
+
 
 obtenerReclamo()
