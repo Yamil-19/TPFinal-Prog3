@@ -28,5 +28,6 @@ router.patch('/cliente/reclamo/:idReclamoEstado',authorization.soloCliente, usua
 router.post('/register', usuarioController.register)
 router.post('/login', usuarioController.iniciarSesion)
 router.post('/cliente/reclamo', usuarioController.crearReclamo)
+router.post('/cliente/perfil/actualizar', usuarioController.actualizarPerfil)
 
 export { router }

@@ -1,35 +1,18 @@
-import mysql from 'mysql2/promise'
-import dotenv from "dotenv";
 import bcryptjs from "bcryptjs" 
+import { conexion } from './conexion.js';
+import Cliente  from "./db_cliente.js";
 
-dotenv.config();
 
 export default class Usuario {
-
     constructor() {
-        this.initConnection();
+        this.cliente = new Cliente()
     }
-
-    async initConnection() {
-        try {
-            this.conexion = await mysql.createConnection({
-                host: process.env.DB_HOST,
-                user: process.env.DB_USER,
-                password: '',
-                database: process.env.DB_NAME
-            })
-        } catch (error) {
-            throw new Error("No se pudo establecer conexión con la Base de Datos.")
-        }
-    }
-    
 
     obtenerDatos = async ({nombre, contrasenia}) => {
         try {
-            const sql = 'SELECT contrasenia, idUsuario, idTipoUsuario FROM usuarios WHERE nombre = ?';
-            const sql2 = 'SELECT descripcion FROM usuariostipo WHERE idUsuarioTipo = ?';
-            const [resultado] = await this.conexion.query(sql, [nombre])
-            const [resultado2] = await this.conexion.query(sql2, [resultado[0].idTipoUsuario])
+            const sql = `SELECT u.contrasenia, u.idUsuario, ut.descripcion FROM usuarios AS u INNER JOIN usuariosTipo AS ut ON u.idTipoUsuario = ut.idUsuarioTipo WHERE u.nombre = ?`
+            const [resultado] = await conexion.query(sql, [nombre])
+            
             if (resultado.length === 0) {
                 console.log('Usuario no encontrado')
                 return res.send('Usuario no encontrado');
@@ -37,7 +20,7 @@ export default class Usuario {
     
             const contraseñaAlmacenada = resultado[0].contrasenia;
             const idUsuario = resultado[0].idUsuario
-            const descripcion = resultado2[0].descripcion
+            const descripcion = resultado[0].descripcion
     
             const contraCorrecta= await bcryptjs.compare(contrasenia, contraseñaAlmacenada)
             if (contraCorrecta) {
@@ -56,8 +39,7 @@ export default class Usuario {
 
         const sql = `SELECT idUsuario, nombre, apellido, correoElectronico, contrasenia FROM usuarios WHERE idUsuario = ?`
 
-        const [rows] = await this.conexion.query(sql, [usuarioId])
-        // console.log(rows)
+        const [rows] = await conexion.query(sql, [usuarioId])
 
         return (rows.length > 0)? rows[0] : null;
     }
@@ -72,13 +54,13 @@ export default class Usuario {
             const salt = await bcryptjs.genSalt(5)
             const constraseñaHasheada = await bcryptjs.hash(contrasenia, salt)
                             
-            const [resultado] = await this.conexion.query(sql, [descripcion, activo])
+            const [resultado] = await conexion.query(sql, [descripcion, activo])
             
             const idTipoUsuario = resultado.insertId;
                 
-            const [resultado2] = await this.conexion.query(sql2, [nombre, apellido, correoElectronico, constraseñaHasheada, idTipoUsuario, imagen, activo])
+            const [resultado2] = await conexion.query(sql2, [nombre, apellido, correoElectronico, constraseñaHasheada, idTipoUsuario, imagen, activo])
 
-            const [rows] = await this.conexion.query('SELECT LAST_INSERT_ID() AS idUsuario');
+            const [rows] = await conexion.query('SELECT LAST_INSERT_ID() AS idUsuario');
     
             return await this.findById(rows[0].idUsuario);
 
@@ -87,38 +69,27 @@ export default class Usuario {
             throw new Error('Error al registrar el usuario');
         }
     }
-
+    
     iniciarSesion = async ({nombre, contrasenia}) => {
-        const sql = 'SELECT contrasenia, idTipoUsuario FROM usuarios WHERE nombre = ?';
-        const sql2 = 'SELECT descripcion FROM usuariostipo WHERE idUsuarioTipo = ?';
+        const sql = `SELECT u.contrasenia, ut.descripcion FROM usuarios AS u INNER JOIN usuariosTipo AS ut ON u.idTipoUsuario = ut.idUsuarioTipo WHERE u.nombre = ?`
 
-        const [resultado] = await this.conexion.query(sql, [nombre])
-        // console.log(resultado)
+        const [resultado] = await conexion.query(sql, [nombre])
             
         if (resultado.length === 0) {
             console.log('Usuario no encontrado')
-            return res.send('Usuario no encontrado');
         }
             
         const contraseñaAlmacenada = resultado[0].contrasenia;
-        const idUsuarioTipo = resultado[0].idTipoUsuario
-        
         const contraCorrecta= await bcryptjs.compare(contrasenia, contraseñaAlmacenada)
-        // console.log(contraCorrecta)
         
         if (contraCorrecta) {
-            const [resultado2] = await this.conexion.query(sql2, [idUsuarioTipo])
-            // console.log(resultado2)
-            
-            const descripcion = resultado2[0].descripcion
-            // console.log(descripcion)
-            if (descripcion === 'Cliente') {
+            if (resultado[0].descripcion === 'Cliente') {
                 return '/api/cliente'
             }
-            if (descripcion === 'Empleado') {
+            if (resultado[0].descripcion === 'Empleado') {
                 return '/api/empleado'
             }
-            if (descripcion === 'Administrador') {
+            if (resultado[0].descripcion === 'Administrador') {
                 return '/api/administrador'
             }
         } else {
@@ -126,52 +97,22 @@ export default class Usuario {
         };  
     }
     
-    crearReclamo = async ({asunto, descripcion, activo, fechaCreado, idUsuarioCreador}) => {
+    actualizarPerfil = async ({nombre, apellido, correoElectronico, contraseña, idUsuario}) => {
         try {
-            const sql = `INSERT INTO reclamosestado (descripcion, activo) VALUES (?,?)`
-            const sql2 = `INSERT INTO reclamosTipo (descripcion, activo) VALUES (?,?)`
-            const sql3 = `INSERT INTO reclamos (asunto, descripcion, fechaCreado, idReclamoEstado, idReclamoTipo, idUsuarioCreador) 
-                        VALUES (?,?,?,?,?,?)`
+            const sql = `UPDATE usuarios SET  nombre = ? , apellido = ?, correoElectronico = ?, contrasenia = ? WHERE idUsuario = ?`
 
-            const [resultado] = await this.conexion.query(sql, ['Creado', activo])
-            const [resultado2] = await this.conexion.query(sql2, [descripcion, activo])
-            
-            const idReclamoEstado = resultado.insertId
-            const idReclamoTipo = resultado2.insertId
-            const [resultado3] = await this.conexion.query(sql3, [asunto, descripcion, fechaCreado, idReclamoEstado, idReclamoTipo, idUsuarioCreador])
-            
-        } catch (error) {
-            console.error('Error al crear el reclamo:', error);
-            throw new Error('Error al crear el reclamo');
-        }
-    }
+            const salt = await bcryptjs.genSalt(5)
+            const constraseñaHasheada = await bcryptjs.hash(contraseña, salt)
 
-    obtenerReclamo = async (idUsuario) => {
-        try {
-            const sql = `SELECT asunto, descripcion, fechaCreado, fechaFinalizado, fechaCancelado, idUsuarioFinalizador, idReclamoEstado FROM reclamos WHERE idUsuarioCreador = ?`
-            const sql2 = `SELECT idReclamoEstado FROM reclamosestado WHERE activo = ?`
-            const [resultado] = await this.conexion.query(sql, [idUsuario])
-            // console.log(resultado)
+            const [resultado] = await conexion.query(sql, [nombre, apellido, correoElectronico, constraseñaHasheada, idUsuario])
+
+            if (resultado.affectedRows === 0) {
+                console.log('No se pudo modificar el perfil')
+            }
             return resultado
         } catch (error) {
-            console.log('Error al obtener el reclamo: ', error)
-            throw new Error('Error al obtener el reclamo')
-        }
-    }
-    
-    cancelarReclamo = async (idReclamoEstado) => {
-        console.log('Hasta aca llego 2:', idReclamoEstado)
-        try {
-            const sql = `SELECT descripcion FROM reclamosestado WHERE idReclamoEstado = ? AND activo = ?`
-            const sql2 = `UPDATE reclamosestado SET descripcion = ?, activo = ? WHERE idReclamoEstado = ?`
-            const [resultado2] = await this.conexion.query(sql, [idReclamoEstado, 1])
-            console.log(resultado2)
-            const [resultado3] = await this.conexion.query(sql2, ['Cancelado', 0, idReclamoEstado])
-            console.log(resultado3)
-        
-        } catch (error) {
-            console.log('Error al cancelar el reclamo: ', error)
-            throw new Error('Error al cancelar el reclamo')
+            console.log('Error al actualizar el perfil: ', error)
+            throw new Error('Error al actualizar el perfil')
         }
     }
 }

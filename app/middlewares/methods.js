@@ -12,24 +12,20 @@ function soloCliente(req, res, next) {
 
 function soloPublico(req, res, next) {
     const logueado = revisarCookie(req)
-    console.log(logueado.descripcion)
     if (!logueado) return next();
-    else if (logueado.descripcion === "Cliente") {
-        console.log('Funciono')
+    else if (logueado.descripcion === "Cliente") {  
         return res.redirect('/api/cliente')
     }
     else if (logueado.descripcion === "Empleado") {
-        console.log('Funciono')
         return res.redirect('/api/empleado')
     }
     else if (logueado.descripcion === "Administrador") {
-        console.log('Funciono')
         return res.redirect('/api/administrador')
     } 
     
 }
 
-function revisarCookie(req){
+function revisarCookie(req, res){
     try {
         // console.log(req.headers.cookie)
         const cookieJWT =  req.headers.cookie.split('; ').find(cookie => cookie.startsWith('jwt=')).slice(4)

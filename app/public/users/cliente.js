@@ -1,11 +1,13 @@
 
 document.getElementById('reclamoCliente-form').addEventListener("submit", async (e) => {
+    // console.log(e.target.tipo.selectedIndex + 1)
     e.preventDefault()
     try {
         const response = await fetch("http://localhost:3000/api/cliente/reclamo", {
             method: 'POST',
             headers:  {'Content-Type' : 'application/json'} ,
             body: JSON.stringify({
+                idTipo: e.target.tipo.selectedIndex + 1,
                 asunto: e.target.asunto.value,
                 descripcion: e.target.descripcion.value,
                 activo: 1
@@ -13,7 +15,9 @@ document.getElementById('reclamoCliente-form').addEventListener("submit", async 
         })
         if (!response.ok) {
             console.log('Errooor')
-        } 
+        } else {
+            obtenerReclamo()
+        }
         
     } catch (error) {
         console.log(`El error es: ${error}`)
@@ -89,3 +93,29 @@ const cancelarReclamo = async (idReclamo, reclamo) => {
 
 
 obtenerReclamo()
+
+document.getElementById("actualizar-perfil").addEventListener("submit", async (e) => {
+    e.preventDefault()
+    console.log('esta enviando los datos')
+    try {
+        const response = await fetch("http://localhost:3000/api/cliente/perfil/actualizar", {
+            method: 'POST',
+            headers: {'Content-Type' : 'application/json'},
+            body: JSON.stringify({
+                nombre: e.target.nombre.value,
+                apellido: e.target.apellido.value,
+                correoElectronico: e.target.correoElectronico.value,
+                contraseña: e.target.contraseña.value
+            })
+        })
+        if (!response.ok) {
+            console.log('Errooor')
+        } else {
+            document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            alert("Cookie eliminada");
+            document.location.href = '/api/';
+        }
+    } catch (error) {
+        console.log(`El error es: ${error}`)
+    }
+})
