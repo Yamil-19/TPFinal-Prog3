@@ -12,18 +12,19 @@ router.get('/', authorization.soloPublico ,(req, res) => {
 router.get('/register', authorization.soloPublico, (req, res) => {
     res.status(200).send(register)
 })
-router.get('/cliente',authorization.soloCliente, (req, res) => {
+router.get('/cliente',authorization.verificarUsuario, (req, res) => {
     res.status(200).send(cliente)
 })
-router.get('/empleado', authorization.soloCliente, (req, res) => {
+router.get('/empleado', authorization.verificarUsuario, (req, res) => {
     res.status(200).send(empleado)
 })
-router.get('/administrador', (req, res) => {
+router.get('/administrador',authorization.verificarUsuario, (req, res) => {
     res.status(200).send(administrador)
 })
 
-router.get('/cliente/reclamo',authorization.soloCliente, usuarioController.obtenerReclamo)
-router.patch('/cliente/reclamo/:idReclamoEstado',authorization.soloCliente, usuarioController.cancelarReclamo)
+router.get('/cliente/reclamo',authorization.verificarUsuario, usuarioController.obtenerReclamo)
+// router.get('/administrador/reclamos/tipos',authorization.verificarUsuario, usuarioController.obtenerTiposReclamos)
+router.patch('/cliente/reclamo/:idReclamoEstado',authorization.verificarUsuario, usuarioController.cancelarReclamo)
 
 router.post('/register', usuarioController.register)
 router.post('/login', usuarioController.iniciarSesion)
