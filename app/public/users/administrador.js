@@ -30,10 +30,10 @@ const obtenerTiposReclamos = async () => {
             btnEliminar.className = 'boton_cancelar'
             
             btnModificar.addEventListener('click', async () => {
-                await modificarTipoReclamo(dato.idTipoReclamo, tr)
+                await modificarTipoReclamo(dato.idReclamoTipo, tr)
             })
             btnEliminar.addEventListener('click', async () => {
-                await eliminarTipoReclamo(dato.idTipoReclamo, tr)
+                await eliminarTipoReclamo(dato.idReclamoTipo, tr)
             })
 
             tdModificar.appendChild(btnModificar)
@@ -46,9 +46,30 @@ const obtenerTiposReclamos = async () => {
     }
 }
 
-const modificarTipoReclamo = () => {
-    
-}
-const eliminarTipoReclamo = () => {
+obtenerTiposReclamos()
 
+const modificarTipoReclamo = () => {
+    console.log("se apretó modificarTipoReclamo")
+}
+
+const eliminarTipoReclamo = async (idReclamoTipo, reclamo) => {  // <-----
+    try {
+        const response = await fetch(`http://localhost:3000/api/cliente/reclamo/${idReclamo}`, {
+            method: 'PATCH',
+            headers:  {'Content-Type' : 'application/json'} ,
+            body: JSON.stringify({
+                descripcion: 'Cancelado',
+                activo: 0
+            })
+            })
+        if (!response) {
+            console.log('Error al cancelar el reclamo')
+        } else {
+            alert(`Reclamo ${idReclamo} cancelado correctamente`)
+            
+            reclamo.innerHTML = ''
+        }
+    } catch (error){
+        console.log('Error al cancelar el reclamo: ', error)
+    }
 }

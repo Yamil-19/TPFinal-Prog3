@@ -132,6 +132,30 @@ export default class UsuarioController {
         }
     }
 
+    obtenerReclamosTipo = async (req, res) => {
+        try {
+            const reclamosTipoObtenidos = await this.service.obtenerReclamosTipo()
+            return res.status(200).send(reclamosTipoObtenidos);
+        } catch (error){
+            return res
+                .status(error?.status || 500)
+                .send({ status: "Fallo", data: { error: error?.message || error } });
+        }
+    }
+
+    agregarReclamoTipo = async (req, res) => { // <-----
+        const idReclamoTipo = req.params.idReclamoTipo
+
+        if (!idReclamoTipo) {
+            return res.status(404).send({ status: "Fallo", data: { error: "El parámetro idReclamoTipo no puede ser vacío." } })
+        }
+        //
+        // <------
+        //
+    }
+
+
+
     cancelarReclamo = async (req, res) => {
         const idReclamoEstado = req.params.idReclamoEstado
 

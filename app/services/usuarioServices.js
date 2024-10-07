@@ -1,3 +1,4 @@
+import Administrador from "../database/db_administrador.js";
 import Cliente from "../database/db_cliente.js";
 import Usuario from "../database/usuario.js";
 
@@ -6,6 +7,7 @@ export default class UsuarioServices {
     constructor() {
         this.usuario = new Usuario()
         this.cliente = new Cliente()
+        this.administrador = new Administrador()
     }
 
     obtenerDatos = (usuario) => {
@@ -36,7 +38,11 @@ export default class UsuarioServices {
         return this.cliente.obtenerReclamo(idUsuario)
     }
 
-    cancelarReclamo = (idReclamoEstado) => {
+    obtenerReclamosTipo = () => {
+        return this.administrador.obtenerReclamosTipo()
+    }
+
+    cancelarReclamo = (idReclamoEstado) => { 
         return this.cliente.cancelarReclamo(idReclamoEstado)
     }
 
