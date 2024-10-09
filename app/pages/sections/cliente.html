@@ -13,6 +13,18 @@
             <form id="reclamoCliente-form">
                 <h2>Crear Reclamos</h2>
 
+                <div class="tipo-reclamo">
+                    <label for="#">Tipo de Reclamo</label>
+                    <select id="tipo" required>
+                        <option value="FallaDeMotor">Falla de motor</option>
+                        <option value="FallaDeFrenos">Falla de frenos</option>
+                        <option value="FallaDeSuspension">Falla de suspensión</option>
+                        <option value="ReemplazoDePiezas">Reemplazo de piezas</option>
+                        <option value="Reembolso">Reembolso</option>
+                        <option value="Reembolso">otros</option>
+                    </select>
+                </div>
+
                 <div class="input-contenedor">
                     <input id="asunto" type="text" required>
                     <label for="#">Asunto</label>
@@ -38,6 +50,27 @@
                 <tbody id="tabla_datos">
                 </tbody>
             </table>
+            <form id="actualizar-perfil">
+                <h2>Actualizar Perfil</h2>
+                <div class="input-contenedor">
+                    <input id="nombre" type="text" required>
+                    <label for="#">Nombre</label>
+                </div>
+                <div class="input-contenedor">
+                    <input id="apellido" type="text" required>
+                    <label for="#">Apellido</label>
+                </div>
+                <div class="input-contenedor">
+                    <input id="correoElectronico" type="email" required>
+                    <label for="#">Correo Electronico</label>
+                </div>
+                
+                <div class="input-contenedor">
+                    <input id="contraseña" type="password" required>
+                    <label for="#">Contraseña</label>
+                </div>
+                <button class="boton">Enviar</button>
+            </form>
         </div>
     </div>
 </body>

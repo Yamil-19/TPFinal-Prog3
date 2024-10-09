@@ -32,5 +32,5 @@ const puerto = process.env.PUERTO || 3000
 
 app.listen(puerto, () => {
     console.log(`servidor corriendo en http://localhost:${puerto}/api`)
-});
+})
     

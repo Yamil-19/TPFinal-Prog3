@@ -1,13 +1,17 @@
+import Administrador from "../database/db_administrador.js";
+import Cliente from "../database/db_cliente.js";
 import Usuario from "../database/usuario.js";
 
 
 export default class UsuarioServices {
     constructor() {
         this.usuario = new Usuario()
+        this.cliente = new Cliente()
+        this.administrador = new Administrador()
     }
 
-    obtenerId = (usuario) => {
-        return this.usuario.obtenerId(usuario)
+    obtenerDatos = (usuario) => {
+        return this.usuario.obtenerDatos(usuario)
     }
 
     register = (usuario) => {
@@ -17,20 +21,32 @@ export default class UsuarioServices {
     iniciarSesion = (usuario) => {
         return this.usuario.iniciarSesion(usuario)
     }
-
+    
+    actualizarPerfil = (usuarioActualizado) => {
+        return this.usuario.actualizarPerfil(usuarioActualizado)
+    }
+    
     crearReclamo = (reclamo) => {
         const reclamoData = {
             ...reclamo, 
             fechaCreado:  new Date().toISOString().replace('T', ' ').replace('Z', '')
         }
-        return this.usuario.crearReclamo(reclamoData)
+        return this.cliente.crearReclamo(reclamoData)
     }
 
     obtenerReclamo = (idUsuario) => {
-        return this.usuario.obtenerReclamo(idUsuario)
+        return this.cliente.obtenerReclamo(idUsuario)
+    }
+    
+    cancelarReclamo = (idReclamoEstado) => { 
+        return this.cliente.cancelarReclamo(idReclamoEstado)
     }
 
-    cancelarReclamo = (idReclamoEstado) => {
-        return this.usuario.cancelarReclamo(idReclamoEstado)
+    obtenerReclamosTipo = () => {
+        return this.administrador.obtenerReclamosTipo()
+    }
+
+    modificarReclamoTipo = (id, desc, act) => {
+        return this.administrador.modificarReclamoTipo(id, desc, act)
     }
 }

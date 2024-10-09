@@ -14,11 +14,11 @@ export default class UsuarioController {
         const { body } = req; // guarda en body los datos del cuerpo de la solicitud
 
         if (!body.nombre || !body.apellido || !body.correoElectronico || !body.contrasenia || !body.descripcion) {
-            res.status(404).send({
-                    status: "Fallo",
-                    data: {
-                        error: "Uno de los datos falta o es vacío."
-                    }
+            return res.status(404).send({
+                        status: "Fallo",
+                        data: {
+                            error: "Uno de los datos falta o es vacío."
+                        }
                 });
         }
         // verifica si los campos obligatorios están presentes, si falta alguno responde con un error 404
@@ -37,11 +37,11 @@ export default class UsuarioController {
 
         try {
             const usuarioCreado = await this.service.register(usuario);
-            res.status(201).send({ status: "OK", data: usuarioCreado, redirect:'/api' });
+            return res.status(201).send({ status: "OK", data: usuarioCreado, redirect:'/api' });
         } catch (error) {
-            res
-                .status(error?.status || 500)
-                .send({ status: "Fallo", data: { error: error?.message || error } });
+            return res
+                    .status(error?.status || 500)
+                    .send({ status: "Fallo", data: { error: error?.message || error } });
         }
     }
 
@@ -49,7 +49,7 @@ export default class UsuarioController {
         const { body } = req;
 
         if (!body.nombre || !body.contrasenia) {
-            res.status(404).send({
+            return res.status(404).send({
                     status: "Fallo",
                     data: {
                         error: "Uno de los datos falta o es vacío."
@@ -64,30 +64,30 @@ export default class UsuarioController {
 
         try {
             const usuarioLogin = await this.service.iniciarSesion(usuario);
-            const idUsuario = await this.service.obtenerId(usuario)
-            const token = jsonWebToken.sign({idUsuario: idUsuario, nombre: usuario.nombre}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRATION})
+            const datos = await this.service.obtenerDatos(usuario)
+            const token = jsonWebToken.sign({idUsuario: datos.idUsuario, nombre: usuario.nombre, descripcion: datos.descripcion}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRATION})
             const cookieOption = {
-                path: '/'
+                path: '/',
             }
             res.cookie('jwt', token, cookieOption)
             res.status(201).send({ status: "OK", data: usuarioLogin, redirect: usuarioLogin});
         } catch (error) {
-            res
-            .status(error?.status || 500)
-            .send({ status: "Fallo", data: { error: error?.message || error } });
+            return res
+                    .status(error?.status || 500)
+                    .send({ status: "Fallo", data: { error: error?.message || error } });
         }
     }
     
     crearReclamo = async (req, res) => {
-        // console.log(req.headers.cookie)
+    
         const { body } = req;
         
         if (!body.asunto) {
-            res.status(404).send({
-                status: "Fallo",
-                data: {
-                    error: "falta datos o es vacío."
-                }
+            return res.status(404).send({
+                    status: "Fallo",
+                    data: {
+                        error: "falta dato o es vacío."
+                    }
             });
         }
         
@@ -95,55 +95,135 @@ export default class UsuarioController {
         
         if (!idUsuarioCreador) {
             return res.send({
-                status: "Fallo",
-                data: { error: "Usuario no autenticado." }
+                    status: "Fallo",
+                    data: { 
+                        error: "Usuario no autenticado." 
+                    }
             });
         }
 
         const reclamo = {
+            idTipo: body.idTipo,
+            tipo: body.tipo,
             asunto: body.asunto,
             descripcion: body.descripcion,
             activo: body.activo,
-            idUsuarioCreador: idUsuarioCreador
+            idUsuarioCreador: idUsuarioCreador.idUsuario
         };
         try {
             const reclamoCliente = await this.service.crearReclamo(reclamo);
 
-            res.status(201).send({ status: "OK", data: reclamoCliente});
+            return res.status(201).send({ status: "OK", data: reclamoCliente});
         } catch (error) {
-            res
-            .status(error?.status || 500)
-            .send({ status: "Fallo", data: { error: error?.message || error } });
+            return res
+                    .status(error?.status || 500)
+                    .send({ status: "Fallo", data: { error: error?.message || error } });
         }
     }
     
     obtenerReclamo = async (req, res) => {
-        const idUsuarioCreador = authorization.revisarCookie(req);
+        const usuario = authorization.revisarCookie(req);
+        console.log(usuario)
+        const idUsuarioCreador = usuario.idUsuario
         try {
             const reclamoObtenido = await this.service.obtenerReclamo(idUsuarioCreador)
-            // console.log(reclamoObtenido)
-            res.status(200).send(reclamoObtenido);
+            return res.status(200).send(reclamoObtenido);
         } catch (error){
-            res
-            .status(error?.status || 500)
-            .send({ status: "Fallo", data: { error: error?.message || error } });
+            return res
+                .status(error?.status || 500)
+                .send({ status: "Fallo", data: { error: error?.message || error } });
         }
     }
 
+    obtenerReclamosTipo = async (req, res) => {
+        try {
+            const reclamosTipoObtenidos = await this.service.obtenerReclamosTipo()
+            return res.status(200).send(reclamosTipoObtenidos);
+        } catch (error){
+            return res
+                .status(error?.status || 500)
+                .send({ status: "Fallo", data: { error: error?.message || error } });
+        }
+    }
+
+    agregarReclamoTipo = async (req, res) => { // <-----
+        const idReclamoTipo = req.params.idReclamoTipo
+
+        if (!idReclamoTipo) {
+            return res.status(404).send({ status: "Fallo", data: { error: "El parámetro idReclamoTipo no puede ser vacío." } })
+        }
+        //
+        // <------
+        //
+    }
+
+    modificarReclamoTipo = async (req, res) => {
+        const idReclamoTipo = req.params.idReclamoTipo
+        const body = req.body
+        console.log(body)
+
+        if (!idReclamoTipo) {
+            return res.status(404).send({ status: "Fallo", data: { error: "El parámetro idReclamoTipo no puede ser vacío." } })
+        }
+        try {
+            const reclamoTipoModificado = await this.service.modificarReclamoTipo(idReclamoTipo, body.descripcion, body.activo)
+            return res.status(200).send(reclamoTipoModificado)
+            console.log("ahre")
+        } catch {
+            console.log("ahre2")
+        }
+    }
+    // activarReclamoTipo = () => {
+
+    // }
+    // desactivarReclamoTipo = () => {
+
+    // }
+
+
+
     cancelarReclamo = async (req, res) => {
         const idReclamoEstado = req.params.idReclamoEstado
-        console.log('Hasta aca llego:', idReclamoEstado)
+
         if (!idReclamoEstado) {
-            res.status(404).send({ status: "Fallo", data: { error: "El parámetro idReclamoEstado no puede ser vacío." } })
+            return res.status(404).send({ status: "Fallo", data: { error: "El parámetro idReclamoEstado no puede ser vacío." } })
         }
         try {
             const reclamoCancelado = await this.service.cancelarReclamo(idReclamoEstado)
-            // console.log(reclamoObtenido)
-            res.status(200).send(reclamoCancelado);
+            return res.status(200).send(reclamoCancelado);
         } catch (error){
-            res
-            .status(error?.status || 500)
-            .send({ status: "Fallo", data: { error: error?.message || error } });
+            return res
+                .status(error?.status || 500)
+                .send({ status: "Fallo", data: { error: error?.message || error } });
+        }
+    }
+
+    actualizarPerfil = async (req, res) => {
+        const {body} = req
+        const perfilUsuario = authorization.revisarCookie(req);
+
+        if (!body.nombre || !body.apellido || !body.correoElectronico || !body.contraseña) {
+            return res.status(404).send({
+                    status: "Fallo",
+                    data: { error: "Uno de los datos falta o es vacío." }
+                });
+        }  
+
+        const usuario = {
+            nombre: body.nombre,
+            apellido: body.apellido,
+            correoElectronico: body.correoElectronico,
+            contraseña: body.contraseña,
+            idUsuario: perfilUsuario.idUsuario
+        };
+
+        try {
+            const usuarioActualizado = await this.service.actualizarPerfil(usuario);
+            return res.status(201).send({ status: "OK", data: usuarioActualizado});
+        } catch (error) {
+            return res
+                .status(error?.status || 500)
+                .send({ status: "Fallo", data: { error: error?.message || error } });
         }
     }
 
