@@ -37,13 +37,16 @@ export default class UsuarioServices {
     obtenerReclamo = (idUsuario) => {
         return this.cliente.obtenerReclamo(idUsuario)
     }
+    
+    cancelarReclamo = (idReclamoEstado) => { 
+        return this.cliente.cancelarReclamo(idReclamoEstado)
+    }
 
     obtenerReclamosTipo = () => {
         return this.administrador.obtenerReclamosTipo()
     }
 
-    cancelarReclamo = (idReclamoEstado) => { 
-        return this.cliente.cancelarReclamo(idReclamoEstado)
+    modificarReclamoTipo = (id, desc, act) => {
+        return this.administrador.modificarReclamoTipo(id, desc, act)
     }
-
 }

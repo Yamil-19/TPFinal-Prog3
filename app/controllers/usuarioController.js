@@ -154,6 +154,29 @@ export default class UsuarioController {
         //
     }
 
+    modificarReclamoTipo = async (req, res) => {
+        const idReclamoTipo = req.params.idReclamoTipo
+        const body = req.body
+        console.log(body)
+
+        if (!idReclamoTipo) {
+            return res.status(404).send({ status: "Fallo", data: { error: "El parámetro idReclamoTipo no puede ser vacío." } })
+        }
+        try {
+            const reclamoTipoModificado = await this.service.modificarReclamoTipo(idReclamoTipo, body.descripcion, body.activo)
+            return res.status(200).send(reclamoTipoModificado)
+            console.log("ahre")
+        } catch {
+            console.log("ahre2")
+        }
+    }
+    // activarReclamoTipo = () => {
+
+    // }
+    // desactivarReclamoTipo = () => {
+
+    // }
+
 
 
     cancelarReclamo = async (req, res) => {
