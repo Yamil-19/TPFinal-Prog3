@@ -1,17 +1,17 @@
-import UsuarioServices from "../services/usuarioServices.js";
-import jsonWebToken from 'jsonwebtoken'
-import dotenv from 'dotenv'
-import { method as authorization } from "../middlewares/methods.js";
+import UsuarioServices from "../services/usuarioServices.js"; //importa el servicio que contiene la lógica de negocio relacionada con los usuarios
+import jsonWebToken from 'jsonwebtoken'; // importa el módulo que te permite crear y verificar json web tokens (jwt)
+import dotenv from 'dotenv'; // permite cargar las variables de entorno desde el archivo . env (como la clave secreta del JWT)
+import { method as authorization } from "../middlewares/methods.js"; // importa las funciones de autorización desde el archivo de middleware que se encargan de verificar si el usuario está autenticado y autorizado
 
 dotenv.config()
 
 export default class UsuarioController {
     constructor() {
         this.service = new UsuarioServices()
-    }
+    } // inicializa la clase UsuarioController creando una instancia de UsuarioServices que contiene la lógica de interacción con la abse de datos
 
-    register = async (req, res) => {
-        const { body } = req;
+    register = async (req, res) => { // este método se llama cuando un cliente envía una solicitud POST (en el archivo routes)
+        const { body } = req; // guarda en body los datos del cuerpo de la solicitud
 
         if (!body.nombre || !body.apellido || !body.correoElectronico || !body.contrasenia || !body.descripcion) {
             res.status(404).send({
@@ -21,6 +21,7 @@ export default class UsuarioController {
                     }
                 });
         }
+        // verifica si los campos obligatorios están presentes, si falta alguno responde con un error 404
 
         const usuario = {
             nombre: body.nombre,
@@ -31,6 +32,8 @@ export default class UsuarioController {
             imagen: body.imagen,
             activo: body.activo
         };
+
+        // crea un objeto usuario con la informacion proveniente del cuerpo de la solicitud
 
         try {
             const usuarioCreado = await this.service.register(usuario);
