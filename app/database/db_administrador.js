@@ -12,6 +12,19 @@ export default class Administrador {
         }
     }
 
+    modificarReclamoTipo = async(idReclamoTipo, descripcion, activo) => {
+        try {
+            const sql = `UPDATE reclamostipo SET descripcion = ?, activo = ? WHERE idReclamoTipo = ?`
+            const [resultado] = await conexion.query(sql, [descripcion, activo, idReclamoTipo])
+            if (resultado.affectedRows === 0) {
+                console.log('No se pudo modificar el reclamoTipo')
+            }
+        } catch (error) {
+            console.log('Error al cancelar el reclamo: ', error)
+            throw new Error('Error al cancelar el reclamo')
+        }
+    }
+
     cancelarReclamo = async (idReclamoEstado) => { // <-----
         try {
             const sql = `UPDATE reclamosestado SET descripcion = ?, activo = ? WHERE idReclamoEstado = ?`

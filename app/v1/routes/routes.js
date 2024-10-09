@@ -28,8 +28,8 @@ router.patch('/cliente/reclamo/:idReclamoEstado',authorization.verificarUsuario,
 router.get('/administrador/reclamos/tipos',authorization.verificarUsuario, usuarioController.obtenerReclamosTipo)
 router.post('/administrador/reclamos/tipos/agregar/:idReclamoTipo',authorization.verificarUsuario, usuarioController.agregarReclamoTipo) // <-----
 router.patch('/administrador/reclamos/tipos/modificar/:idReclamoTipo',authorization.verificarUsuario, usuarioController.modificarReclamoTipo) // <-----
-router.patch('/administrador/reclamos/tipos/activar/:idReclamoTipo',authorization.verificarUsuario, usuarioController.activarReclamoTipo) // <-----
-router.patch('/administrador/reclamos/tipos/desactivar/:idReclamoTipo',authorization.verificarUsuario, usuarioController.desactivarReclamoTipo) // <-----
+router.patch('/administrador/reclamos/tipos/activar/:idReclamoTipo',authorization.verificarUsuario, usuarioController.modificarReclamoTipo) // <-----
+router.patch('/administrador/reclamos/tipos/desactivar/:idReclamoTipo',authorization.verificarUsuario, usuarioController.modificarReclamoTipo) // <-----
 
 
 router.post('/register', usuarioController.register)

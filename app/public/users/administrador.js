@@ -17,30 +17,60 @@ const obtenerTiposReclamos = async () => {
 
         data.forEach((dato) => {
             const tr = document.createElement('tr')
-            const tdDescripcion = document.createElement('td')
-            const tdModificar = document.createElement('td')
-            const btnModificar = document.createElement('button')
-            const tdEliminar = document.createElement('td')
-            const btnEliminar = document.createElement('button')
-            
-            tdDescripcion.textContent = dato.descripcion
-            btnModificar.textContent = 'Modificar'
-            btnModificar.className = 'boton_cancelar'
-            btnEliminar.textContent = 'Eliminar'
-            btnEliminar.className = 'boton_cancelar'
-            
-            btnModificar.addEventListener('click', async () => {
-                await modificarTipoReclamo(dato.idReclamoTipo, tr)
-            })
-            btnEliminar.addEventListener('click', async () => {
-                await eliminarTipoReclamo(dato.idReclamoTipo, tr)
-            })
 
-            tdModificar.appendChild(btnModificar)
-            tdEliminar.appendChild(btnEliminar)
+            const tdDescripcion = document.createElement('td')
+            tdDescripcion.textContent = dato.descripcion
             tr.appendChild(tdDescripcion)
-            tr.appendChild(tdModificar)
-            tr.appendChild(tdEliminar)
+            
+            
+            const tdOpciones = document.createElement('td')
+
+            
+            const btnActivar = document.createElement('button')
+            btnActivar.textContent = 'Activar'
+            btnActivar.style.width = '100px'
+            btnActivar.disabled = dato.activo === 1
+            btnActivar.addEventListener('click', async () => {
+                await activarReclamoTipo(dato.idReclamoTipo, dato.descripcion, tr)
+            })
+            tdOpciones.appendChild(btnActivar)
+            
+            const btnDesactivar = document.createElement('button')
+            btnDesactivar.textContent = 'Desactivar'
+            btnDesactivar.style.width = '100px'
+            btnDesactivar.disabled = dato.activo === 0
+            btnDesactivar.addEventListener('click', async () => {
+                await desactivarReclamoTipo(dato.idReclamoTipo, dato.descripcion, tr)
+            })
+            tdOpciones.appendChild(btnDesactivar)
+            
+            const btnModificar = document.createElement('button')
+            btnModificar.textContent = 'Modificar'
+            btnModificar.style.width = '200px'
+            btnModificar.addEventListener('click', async () => {
+                await modificarReclamoTipo(dato.idReclamoTipo, tr)
+            })
+            tdOpciones.appendChild(btnModificar)
+
+            const btnAceptar = document.createElement('button')
+            btnAceptar.textContent = 'Aceptar'
+            btnAceptar.hidden = true
+            btnAceptar.style.width = '100px'
+            btnAceptar.addEventListener('click', async () => {
+                await mostrarBotonModificar(tr)
+            })
+            tdOpciones.appendChild(btnAceptar)
+
+            const btnCancelar = document.createElement('button')
+            btnCancelar.textContent = 'Cancelar'
+            btnCancelar.hidden = true
+            btnCancelar.style.width = '100px'
+            btnCancelar.addEventListener('click', async () => {
+                await mostrarBotonModificar(tr)
+            })
+            tdOpciones.appendChild(btnCancelar)
+
+            tr.appendChild(tdOpciones)
             tbody.appendChild(tr);
         })
     }
@@ -48,28 +78,90 @@ const obtenerTiposReclamos = async () => {
 
 obtenerTiposReclamos()
 
-const modificarTipoReclamo = () => {
+const modificarReclamoTipo = (asd, fila) => {
+    fila.children[1].children[2].hidden = true
+    fila.children[1].children[3].hidden = false
+    fila.children[1].children[4].hidden = false
     console.log("se apretó modificarTipoReclamo")
 }
 
-const eliminarTipoReclamo = async (idReclamoTipo, reclamo) => {  // <-----
+const mostrarBotonModificar = (fila) => {
+    fila.children[1].children[2].hidden = false
+    fila.children[1].children[3].hidden = true
+    fila.children[1].children[4].hidden = true
+}
+
+const activarReclamoTipo = async (idReclamoTipo, desc, fila) => {
     try {
-        const response = await fetch(`http://localhost:3000/api/cliente/reclamo/${idReclamo}`, {
+        const response = await fetch(`http://localhost:3000/api/administrador/reclamos/tipos/activar/${idReclamoTipo}`, {
             method: 'PATCH',
             headers:  {'Content-Type' : 'application/json'} ,
             body: JSON.stringify({
-                descripcion: 'Cancelado',
+                descripcion: desc,
+                activo: 1
+            })
+            })
+        if (!response) {
+            console.log('Error al activar el reclamoTipo')
+        } else {
+            console.log(`ReclamoTipo ${idReclamoTipo} activado correctamente`)
+            fila.children[1].children[0].disabled = true
+            fila.children[1].children[1].disabled = false
+
+        }
+    } catch (error){
+        console.log('Error al activar el reclamoTipo: ', error)
+    }
+}
+
+const desactivarReclamoTipo = async (idReclamoTipo, desc, fila) => {
+    try {
+        const response = await fetch(`http://localhost:3000/api/administrador/reclamos/tipos/desactivar/${idReclamoTipo}`, {
+            method: 'PATCH',
+            headers:  {'Content-Type' : 'application/json'} ,
+            body: JSON.stringify({
+                descripcion: desc,
                 activo: 0
             })
             })
         if (!response) {
-            console.log('Error al cancelar el reclamo')
+            console.log('Error al desactivar el reclamoTipo')
         } else {
-            alert(`Reclamo ${idReclamo} cancelado correctamente`)
-            
-            reclamo.innerHTML = ''
+            console.log(`ReclamoTipo ${idReclamoTipo} desactivado correctamente`)
+            fila.children[1].children[0].disabled = false
+            fila.children[1].children[1].disabled = true
         }
     } catch (error){
-        console.log('Error al cancelar el reclamo: ', error)
+        console.log('Error al desactivar el reclamoTipo: ', error)
     }
 }
+
+
+
+
+
+
+
+
+
+
+// const eliminarTipoReclamo = async (idReclamoTipo, reclamo) => {  // <-----
+//     try {
+//         const response = await fetch(`http://localhost:3000/api/cliente/reclamo/${idReclamo}`, {
+//             method: 'PATCH',
+//             headers:  {'Content-Type' : 'application/json'} ,
+//             body: JSON.stringify({
+//                 activo: 0
+//             })
+//             })
+//         if (!response) {
+//             console.log('Error al cancelar el reclamo')
+//         } else {
+//             alert(`Reclamo ${idReclamo} cancelado correctamente`)
+            
+//             reclamo.innerHTML = ''
+//         }
+//     } catch (error){
+//         console.log('Error al cancelar el reclamo: ', error)
+//     }
+// }
