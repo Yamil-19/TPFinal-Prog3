@@ -8,5 +8,6 @@ const register = fs.readFileSync(__dirname + '../../../pages/register.html', 'ut
 const cliente = fs.readFileSync(__dirname + '../../../pages/sections/cliente.html', 'utf-8')
 const administrador = fs.readFileSync(__dirname + '../../../pages/sections/administrador.html', 'utf-8')
 const empleado = fs.readFileSync(__dirname + '../../../pages/sections/empleado.html', 'utf-8')
+const email = fs.readFileSync(__dirname + '../../../pages/handlebars/email.hbs', 'utf-8')
 
-export {login, register, cliente, administrador, empleado}
+export {login, register, cliente, administrador, empleado, email}

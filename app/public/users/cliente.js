@@ -1,5 +1,6 @@
 
 document.getElementById('reclamoCliente-form').addEventListener("submit", async (e) => {
+    console.log( e.target.tipo)
     // console.log(e.target.tipo.selectedIndex + 1)
     e.preventDefault()
     try {
@@ -7,7 +8,7 @@ document.getElementById('reclamoCliente-form').addEventListener("submit", async 
             method: 'POST',
             headers:  {'Content-Type' : 'application/json'} ,
             body: JSON.stringify({
-                idTipo: e.target.tipo.selectedIndex + 1,
+                tipo: e.target.tipo.value,
                 asunto: e.target.asunto.value,
                 descripcion: e.target.descripcion.value,
                 activo: 1
@@ -30,17 +31,33 @@ document.getElementById('cerrarSesion').addEventListener("click", () => {
     document.location.href = '/api/';
 })
 
-
 const obtenerReclamo = async () => {
     const response = await fetch("http://localhost:3000/api/cliente/reclamo")
     if (!response.ok) {
         console.log('Errooor')
     } else {
         const data = await response.json()
+        // console.log(data.resultado2)
+        const select = document.querySelector('#tipo')
         const tbody = document.querySelector('#tabla_datos')
+        const tipos = []
         tbody.innerHTML = ''
+        select.innerHTML = ''
+        data.resultado2.forEach((dato) => {
+            // console.log(dato.descripcion)
+            if (!tipos.includes(dato.descripcion)) {
+                tipos.push(dato.descripcion)
+    
+                const option = document.createElement('option')
+                option.value = dato.descripcion
+                option.textContent = dato.descripcion
+                select.appendChild(option)
+            } else {
+                console.log('el elemento se repite')
+            }
+        })
 
-        data.forEach((dato) => {
+        data.resultado.forEach((dato) => {
             const tr = document.createElement('tr')
             const tdAsunto = document.createElement('td')
             const tdDescripcion = document.createElement('td')
@@ -52,8 +69,6 @@ const obtenerReclamo = async () => {
             tdDescripcion.textContent = dato.descripcion
             tdFechaCreado.textContent = dato.fechaCreado
             btnCancelar.textContent = 'Cancelar'
-            
-            btnCancelar.className = 'boton_cancelar'
             
             btnCancelar.addEventListener('click', async () => {
                 await cancelarReclamo(dato.idReclamoEstado, tr)
@@ -68,9 +83,9 @@ const obtenerReclamo = async () => {
         })
     }
 }
-const cancelarReclamo = async (idReclamo, reclamo) => {
+const cancelarReclamo = async (idReclamoEstado, reclamo) => {
     try {
-        const response = await fetch(`http://localhost:3000/api/cliente/reclamo/${idReclamo}`, {
+        const response = await fetch(`http://localhost:3000/api/cliente/reclamo/${idReclamoEstado}`, {
             method: 'PATCH',
             headers:  {'Content-Type' : 'application/json'} ,
             body: JSON.stringify({
@@ -81,7 +96,7 @@ const cancelarReclamo = async (idReclamo, reclamo) => {
         if (!response) {
             console.log('Error al cancelar el reclamo')
         } else {
-            alert(`Reclamo ${idReclamo} cancelado correctamente`)
+            alert(`Reclamo ${idReclamoEstado} cancelado correctamente`)
             
             reclamo.innerHTML = ''
         }
@@ -99,7 +114,7 @@ document.getElementById("actualizar-perfil").addEventListener("submit", async (e
     console.log('esta enviando los datos')
     try {
         const response = await fetch("http://localhost:3000/api/cliente/perfil/actualizar", {
-            method: 'POST',
+            method: 'PATCH',
             headers: {'Content-Type' : 'application/json'},
             body: JSON.stringify({
                 nombre: e.target.nombre.value,
@@ -119,3 +134,7 @@ document.getElementById("actualizar-perfil").addEventListener("submit", async (e
         console.log(`El error es: ${error}`)
     }
 })
+
+function opcionesTipoReclamo() {
+    document.getElementById('tipo')
+}

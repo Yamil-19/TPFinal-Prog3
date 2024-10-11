@@ -26,7 +26,7 @@ router.get('/cliente/reclamo',authorization.verificarUsuario, usuarioController.
 router.patch('/cliente/reclamo/:idReclamoEstado',authorization.verificarUsuario, usuarioController.cancelarReclamo)
 
 router.get('/administrador/reclamos/tipos',authorization.verificarUsuario, usuarioController.obtenerReclamosTipo)
-router.post('/administrador/reclamos/tipos/agregar/:idReclamoTipo',authorization.verificarUsuario, usuarioController.agregarReclamoTipo) // <-----
+router.post('/administrador/reclamos/tipos/agregar',authorization.verificarUsuario, usuarioController.agregarReclamoTipo)
 router.patch('/administrador/reclamos/tipos/modificar/:idReclamoTipo',authorization.verificarUsuario, usuarioController.modificarReclamoTipo) // <-----
 router.patch('/administrador/reclamos/tipos/activar/:idReclamoTipo',authorization.verificarUsuario, usuarioController.modificarReclamoTipo) // <-----
 router.patch('/administrador/reclamos/tipos/desactivar/:idReclamoTipo',authorization.verificarUsuario, usuarioController.modificarReclamoTipo) // <-----
@@ -35,6 +35,7 @@ router.patch('/administrador/reclamos/tipos/desactivar/:idReclamoTipo',authoriza
 router.post('/register', usuarioController.register)
 router.post('/login', usuarioController.iniciarSesion)
 router.post('/cliente/reclamo', usuarioController.crearReclamo)
-router.post('/cliente/perfil/actualizar', usuarioController.actualizarPerfil)
+// router.post('/administrador/empleado', usuarioController.crearEmpleado)
+router.patch('/cliente/perfil/actualizar', usuarioController.actualizarPerfil)
 
 export { router }

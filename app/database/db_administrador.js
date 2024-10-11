@@ -25,7 +25,7 @@ export default class Administrador {
         }
     }
 
-    cancelarReclamo = async (idReclamoEstado) => { // <-----
+    cancelarReclamo = async (idReclamoEstado) => {
         try {
             const sql = `UPDATE reclamosestado SET descripcion = ?, activo = ? WHERE idReclamoEstado = ?`
             const sql2 = `UPDATE reclamostipo SET activo = ? WHERE idReclamoTipo = ?`
@@ -38,6 +38,19 @@ export default class Administrador {
         } catch (error) {
             console.log('Error al cancelar el reclamo: ', error)
             throw new Error('Error al cancelar el reclamo')
+        }
+    }
+
+    agregarReclamoTipo = async ({descripcion, activo}) => {
+        try {
+            const sql = `INSERT INTO reclamostipo (descripcion, activo) VALUES (?, ?)`
+    
+            const [resultado] = await conexion.query(sql, [descripcion, activo])
+            console.log(resultado)
+            return resultado
+        } catch (error) {
+            console.log('Error al crear el tipo de reclamo: ', error)
+            throw new Error('Error al crear el tipo de reclamo')
         }
     }
 }

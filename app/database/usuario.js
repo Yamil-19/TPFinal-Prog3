@@ -10,8 +10,9 @@ export default class Usuario {
 
     obtenerDatos = async ({nombre, contrasenia}) => {
         try {
-            const sql = `SELECT u.contrasenia, u.idUsuario, ut.descripcion FROM usuarios AS u INNER JOIN usuariosTipo AS ut ON u.idTipoUsuario = ut.idUsuarioTipo WHERE u.nombre = ?`
+            const sql = `SELECT u.contrasenia, u.idUsuario, u.correoElectronico, ut.descripcion FROM usuarios AS u INNER JOIN usuariosTipo AS ut ON u.idTipoUsuario = ut.idUsuarioTipo WHERE u.nombre = ?`
             const [resultado] = await conexion.query(sql, [nombre])
+            // console.log(resultado)
             
             if (resultado.length === 0) {
                 console.log('Usuario no encontrado')
@@ -21,10 +22,11 @@ export default class Usuario {
             const contraseñaAlmacenada = resultado[0].contrasenia;
             const idUsuario = resultado[0].idUsuario
             const descripcion = resultado[0].descripcion
+            const correoElectronico = resultado[0].correoElectronico
     
             const contraCorrecta= await bcryptjs.compare(contrasenia, contraseñaAlmacenada)
             if (contraCorrecta) {
-                return {idUsuario: idUsuario, descripcion: descripcion}
+                return {idUsuario: idUsuario, descripcion: descripcion, correoElectronico: correoElectronico}
             } else {
                 console.log('Contraseña incorrecta')
             };  
@@ -74,13 +76,17 @@ export default class Usuario {
         const sql = `SELECT u.contrasenia, ut.descripcion FROM usuarios AS u INNER JOIN usuariosTipo AS ut ON u.idTipoUsuario = ut.idUsuarioTipo WHERE u.nombre = ?`
 
         const [resultado] = await conexion.query(sql, [nombre])
+        // console.log(resultado)
             
         if (resultado.length === 0) {
             console.log('Usuario no encontrado')
         }
             
         const contraseñaAlmacenada = resultado[0].contrasenia;
+
+        // console.log(contraseñaAlmacenada)
         const contraCorrecta= await bcryptjs.compare(contrasenia, contraseñaAlmacenada)
+        // console.log(contraCorrecta)
         
         if (contraCorrecta) {
             if (resultado[0].descripcion === 'Cliente') {
@@ -97,22 +103,19 @@ export default class Usuario {
         };  
     }
     
-    actualizarPerfil = async ({nombre, apellido, correoElectronico, contraseña, idUsuario}) => {
+    actualizarPerfil = async (usuarioActualizado, idUsuario) => {
         try {
-            const sql = `UPDATE usuarios SET  nombre = ? , apellido = ?, correoElectronico = ?, contrasenia = ? WHERE idUsuario = ?`
-
-            const salt = await bcryptjs.genSalt(5)
-            const constraseñaHasheada = await bcryptjs.hash(contraseña, salt)
-
-            const [resultado] = await conexion.query(sql, [nombre, apellido, correoElectronico, constraseñaHasheada, idUsuario])
-
+            const sql = `UPDATE usuarios SET ? WHERE idUsuario = ?`
+            const [resultado] = await conexion.query(sql, [usuarioActualizado, idUsuario])
+           
             if (resultado.affectedRows === 0) {
                 console.log('No se pudo modificar el perfil')
             }
             return resultado
+
         } catch (error) {
-            console.log('Error al actualizar el perfil: ', error)
-            throw new Error('Error al actualizar el perfil')
-        }
+                console.log('Error al actualizar el perfil: ', error)
+                throw new Error('Error al actualizar el perfil')
+         }
     }
 }

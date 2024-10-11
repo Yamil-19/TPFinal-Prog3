@@ -35,8 +35,8 @@ function revisarCookie(req, res){
         const cookieJWT =  req.headers.cookie.split('; ').find(cookie => cookie.startsWith('jwt=')).slice(4)
         // console.log(cookieJWT)
         const decodificado = jsonwebtoken.verify(cookieJWT, process.env.JWT_SECRET)
-        console.log(decodificado)
-        return {idUsuario: decodificado.idUsuario, descripcion: decodificado.descripcion}
+        // console.log(decodificado)
+        return {idUsuario: decodificado.idUsuario, descripcion: decodificado.descripcion, correoElectronico: decodificado.correoElectronico, nombre: decodificado.nombre}
     } catch {
         return false
     }

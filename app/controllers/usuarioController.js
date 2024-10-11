@@ -62,7 +62,7 @@ export default class UsuarioController {
         try {
             const usuarioLogin = await this.service.iniciarSesion(usuario);
             const datos = await this.service.obtenerDatos(usuario)
-            const token = jsonWebToken.sign({idUsuario: datos.idUsuario, nombre: usuario.nombre, descripcion: datos.descripcion}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRATION})
+            const token = jsonWebToken.sign({idUsuario: datos.idUsuario, nombre: usuario.nombre, descripcion: datos.descripcion, correoElectronico: datos.correoElectronico}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRATION})
             const cookieOption = {
                 path: '/',
             }
@@ -100,7 +100,6 @@ export default class UsuarioController {
         }
 
         const reclamo = {
-            idTipo: body.idTipo,
             tipo: body.tipo,
             asunto: body.asunto,
             descripcion: body.descripcion,
@@ -120,10 +119,10 @@ export default class UsuarioController {
     
     obtenerReclamo = async (req, res) => {
         const usuario = authorization.revisarCookie(req);
-        console.log(usuario)
         const idUsuarioCreador = usuario.idUsuario
         try {
             const reclamoObtenido = await this.service.obtenerReclamo(idUsuarioCreador)
+            // console.log(reclamoObtenido)
             return res.status(200).send(reclamoObtenido);
         } catch (error){
             return res
@@ -143,21 +142,26 @@ export default class UsuarioController {
         }
     }
 
-    agregarReclamoTipo = async (req, res) => { // <-----
-        const idReclamoTipo = req.params.idReclamoTipo
+    agregarReclamoTipo = async (req, res) => {
+        const {body} = req
 
-        if (!idReclamoTipo) {
-            return res.status(404).send({ status: "Fallo", data: { error: "El parámetro idReclamoTipo no puede ser vacío." } })
+        if (!body.descripcion || !body.activo) {
+            return res.status(404).send({ status: "Fallo", data: { error: "falta dato o es vacío." } })
         }
-        //
-        // <------
-        //
+
+        const reclamoTipo = {
+            descripcion: body.descripcion,
+            activo: body.activo
+        }
+
+        const reclamoTipoAgregado = await this.service.agregarReclamoTipo(reclamoTipo)
+        return res.status(200).send(reclamoTipoAgregado)
     }
 
     modificarReclamoTipo = async (req, res) => {
         const idReclamoTipo = req.params.idReclamoTipo
         const body = req.body
-        console.log(body)
+        // console.log(body)
 
         if (!idReclamoTipo) {
             return res.status(404).send({ status: "Fallo", data: { error: "El parámetro idReclamoTipo no puede ser vacío." } })
@@ -165,28 +169,24 @@ export default class UsuarioController {
         try {
             const reclamoTipoModificado = await this.service.modificarReclamoTipo(idReclamoTipo, body.descripcion, body.activo)
             return res.status(200).send(reclamoTipoModificado)
-            console.log("ahre")
         } catch {
-            console.log("ahre2")
+            return res
+            .status(error?.status || 500)
+            .send({ status: "Fallo", data: { error: error?.message || error } });
         }
     }
-    // activarReclamoTipo = () => {
-
-    // }
-    // desactivarReclamoTipo = () => {
-
-    // }
-
-
 
     cancelarReclamo = async (req, res) => {
+        const usuario = authorization.revisarCookie(req)
+        const correoElectronico = usuario.correoElectronico
+        const nombre = usuario.nombre
         const idReclamoEstado = req.params.idReclamoEstado
 
         if (!idReclamoEstado) {
             return res.status(404).send({ status: "Fallo", data: { error: "El parámetro idReclamoEstado no puede ser vacío." } })
         }
         try {
-            const reclamoCancelado = await this.service.cancelarReclamo(idReclamoEstado)
+            const reclamoCancelado = await this.service.cancelarReclamo(idReclamoEstado, correoElectronico, nombre)
             return res.status(200).send(reclamoCancelado);
         } catch (error){
             return res
@@ -199,23 +199,22 @@ export default class UsuarioController {
         const {body} = req
         const perfilUsuario = authorization.revisarCookie(req);
 
-        if (!body.nombre || !body.apellido || !body.correoElectronico || !body.contraseña) {
-            return res.status(404).send({
-                    status: "Fallo",
-                    data: { error: "Uno de los datos falta o es vacío." }
-                });
-        }  
-
-        const usuario = {
-            nombre: body.nombre,
-            apellido: body.apellido,
-            correoElectronico: body.correoElectronico,
-            contraseña: body.contraseña,
-            idUsuario: perfilUsuario.idUsuario
-        };
+        const usuario = {}
+        if (body.nombre !== '') {
+            usuario.nombre = body.nombre
+        }
+        if (body.apellido !== '') {
+            usuario.apellido = body.apellido
+        }
+        if (body.correoElectronico !== '') {
+            usuario.correoElectronico = body.correoElectronico
+        }
+        if (body.contraseña !== '') {
+            usuario.contrasenia = body.contraseña
+        }
 
         try {
-            const usuarioActualizado = await this.service.actualizarPerfil(usuario);
+            const usuarioActualizado = await this.service.actualizarPerfil(usuario, perfilUsuario.idUsuario);
             return res.status(201).send({ status: "OK", data: usuarioActualizado});
         } catch (error) {
             return res
@@ -223,6 +222,5 @@ export default class UsuarioController {
                 .send({ status: "Fallo", data: { error: error?.message || error } });
         }
     }
-
 }
 
