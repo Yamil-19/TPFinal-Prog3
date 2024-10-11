@@ -114,6 +114,7 @@ const mostrarBotonModificar = (fila) => {
 
     fila.children[0].children[0].hidden = true
     fila.children[0].children[1].hidden = false
+    console.log("se apretó mostrarBotonModificar")
 }
 
 const activarReclamoTipo = async (idReclamoTipo, desc, fila) => {
