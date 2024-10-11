@@ -92,6 +92,7 @@ const obtenerTiposReclamos = async () => {
             tr.appendChild(tdOpciones)
             tbody.appendChild(tr);
         })
+        return data
     }
 }
 
@@ -163,31 +164,21 @@ const desactivarReclamoTipo = async (idReclamoTipo, desc, fila) => {
 }
 
 
-
-
-
-
-
-
-
-
-// const eliminarTipoReclamo = async (idReclamoTipo, reclamo) => {  // <-----
-//     try {
-//         const response = await fetch(`http://localhost:3000/api/cliente/reclamo/${idReclamo}`, {
-//             method: 'PATCH',
-//             headers:  {'Content-Type' : 'application/json'} ,
-//             body: JSON.stringify({
-//                 activo: 0
-//             })
-//             })
-//         if (!response) {
-//             console.log('Error al cancelar el reclamo')
-//         } else {
-//             alert(`Reclamo ${idReclamo} cancelado correctamente`)
-            
-//             reclamo.innerHTML = ''
-//         }
-//     } catch (error){
-//         console.log('Error al cancelar el reclamo: ', error)
-//     }
-// }
+document.getElementById('form_tipo').addEventListener('submit', async (e) => {
+    try {
+        e.preventDefault()
+        const response = await fetch(`http://localhost:3000/api/administrador/reclamos/tipos/agregar`, {
+            method: 'POST',
+            headers:  {'Content-Type' : 'application/json'} ,
+            body: JSON.stringify({
+                descripcion: e.target.tipo.value,
+                activo: 1
+            })
+            })
+        if (!response) {
+            console.log('Error al cancelar el reclamo')
+        }
+    } catch (error){
+        console.log('Error al cancelar el reclamo: ', error)
+    }
+})

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cliente</title>
-    <link rel="stylesheet" href="styles.css">
     <script src="/users/cliente.js" defer></script>
 </head>
 <body>
@@ -16,12 +15,6 @@
                 <div class="tipo-reclamo">
                     <label for="#">Tipo de Reclamo</label>
                     <select id="tipo" required>
-                        <option value="FallaDeMotor">Falla de motor</option>
-                        <option value="FallaDeFrenos">Falla de frenos</option>
-                        <option value="FallaDeSuspension">Falla de suspensión</option>
-                        <option value="ReemplazoDePiezas">Reemplazo de piezas</option>
-                        <option value="Reembolso">Reembolso</option>
-                        <option value="Reembolso">otros</option>
                     </select>
                 </div>
 
@@ -53,20 +46,20 @@
             <form id="actualizar-perfil">
                 <h2>Actualizar Perfil</h2>
                 <div class="input-contenedor">
-                    <input id="nombre" type="text" required>
+                    <input id="nombre" type="text">
                     <label for="#">Nombre</label>
                 </div>
                 <div class="input-contenedor">
-                    <input id="apellido" type="text" required>
+                    <input id="apellido" type="text">
                     <label for="#">Apellido</label>
                 </div>
                 <div class="input-contenedor">
-                    <input id="correoElectronico" type="email" required>
+                    <input id="correoElectronico" type="email" >
                     <label for="#">Correo Electronico</label>
                 </div>
                 
                 <div class="input-contenedor">
-                    <input id="contraseña" type="password" required>
+                    <input id="contraseña" type="password">
                     <label for="#">Contraseña</label>
                 </div>
                 <button class="boton">Enviar</button>
