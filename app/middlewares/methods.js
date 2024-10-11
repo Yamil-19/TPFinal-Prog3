@@ -8,24 +8,29 @@ function verificarUsuario(req, res, next) {
     const logueado = revisarCookie(req)
     if (!logueado) {
         return res.redirect('/')
-    } else if (ruta[2] === "cliente" && logueado.descripcion === "Cliente") {
-        return next();
-    } else if (ruta[2] === "empleado" && logueado.descripcion === "Empleado") {
-        return next();
-    } else if (ruta[2] === "administrador" && logueado.descripcion === "Administrador") {
-        return next();
+    } else if (ruta[2] === logueado.descripcion.toLowerCase()){
+        next()
+    } else if (ruta[1] === logueado.descripcion.toLowerCase()){
+        next()
+    // } else if (ruta[2] === "cliente" && logueado.descripcion === "Cliente") {
+    //     return next();
+    // } else if (ruta[2] === "empleado" && logueado.descripcion === "Empleado") {
+    //     return next();
+    // } else if (ruta[2] === "administrador" && logueado.descripcion === "Administrador") {
+    //     return next();
     } else {
         res.send({error: "No tenes acceso"})
-        console.log("no podes entrar xdxd")
     }
 }
 
-function soloPublico(req, res, next) {
+function estaLogueado(req, res, next) {
     const logueado = revisarCookie(req)
     if (!logueado) {
         return next();
+    // } else if (logueado.descripcion === "Cliente") {
+    //     return res.redirect(`/cliente`)
     } else {
-        return res.redirect(`/api/${logueado.descripcion.toLowerCase()}`);
+        return res.redirect(`/${logueado.descripcion.toLowerCase()}`);
     } 
 }
 
@@ -44,6 +49,6 @@ function revisarCookie(req, res){
 
 export const method = {
     verificarUsuario, 
-    soloPublico,
+    estaLogueado,
     revisarCookie
 }

@@ -1,6 +1,6 @@
 import { conexion } from "./conexion.js";
 
-export default class Cliente {
+export default class Clientes {
 
     crearReclamo = async ({tipo, asunto, descripcion, fechaCreado, idUsuarioCreador}) => {
         try {
@@ -53,5 +53,21 @@ export default class Cliente {
             console.log('Error al cancelar el reclamo: ', error)
             throw new Error('Error al cancelar el reclamo')
         }
+    }
+
+    actualizarPerfil = async (usuarioActualizado, idUsuario) => {
+        try {
+            const sql = `UPDATE usuarios SET ? WHERE idUsuario = ?`
+            const [resultado] = await conexion.query(sql, [usuarioActualizado, idUsuario])
+           
+            if (resultado.affectedRows === 0) {
+                console.log('No se pudo modificar el perfil')
+            }
+            return resultado
+
+        } catch (error) {
+                console.log('Error al actualizar el perfil: ', error)
+                throw new Error('Error al actualizar el perfil')
+         }
     }
 }

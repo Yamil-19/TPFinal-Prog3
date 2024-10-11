@@ -1,13 +1,13 @@
-import UsuarioServices from "../services/usuarioServices.js";
+import UsuariosServices from "../services/usuariosService.js";
 import jsonWebToken from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import { method as authorization } from "../middlewares/methods.js";
 
 dotenv.config()
 
-export default class UsuarioController {
+export default class UsuariosController {
     constructor() {
-        this.service = new UsuarioServices()
+        this.service = new UsuariosServices()
     }
 
     register = async (req, res) => {
@@ -44,7 +44,7 @@ export default class UsuarioController {
 
     iniciarSesion = async (req, res) => {
         const { body } = req;
-
+        console.log("okkkk")
         if (!body.nombre || !body.contrasenia) {
             return res.status(404).send({
                     status: "Fallo",
@@ -60,6 +60,7 @@ export default class UsuarioController {
         };
 
         try {
+            console.log("okkk")
             const usuarioLogin = await this.service.iniciarSesion(usuario);
             const datos = await this.service.obtenerDatos(usuario)
             const token = jsonWebToken.sign({idUsuario: datos.idUsuario, nombre: usuario.nombre, descripcion: datos.descripcion, correoElectronico: datos.correoElectronico}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRATION})
@@ -195,32 +196,32 @@ export default class UsuarioController {
         }
     }
 
-    actualizarPerfil = async (req, res) => {
-        const {body} = req
-        const perfilUsuario = authorization.revisarCookie(req);
+    // actualizarPerfil = async (req, res) => {
+    //     const {body} = req
+    //     const perfilUsuario = authorization.revisarCookie(req);
 
-        const usuario = {}
-        if (body.nombre !== '') {
-            usuario.nombre = body.nombre
-        }
-        if (body.apellido !== '') {
-            usuario.apellido = body.apellido
-        }
-        if (body.correoElectronico !== '') {
-            usuario.correoElectronico = body.correoElectronico
-        }
-        if (body.contraseña !== '') {
-            usuario.contrasenia = body.contraseña
-        }
+    //     const usuario = {}
+    //     if (body.nombre !== '') {
+    //         usuario.nombre = body.nombre
+    //     }
+    //     if (body.apellido !== '') {
+    //         usuario.apellido = body.apellido
+    //     }
+    //     if (body.correoElectronico !== '') {
+    //         usuario.correoElectronico = body.correoElectronico
+    //     }
+    //     if (body.contraseña !== '') {
+    //         usuario.contrasenia = body.contraseña
+    //     }
 
-        try {
-            const usuarioActualizado = await this.service.actualizarPerfil(usuario, perfilUsuario.idUsuario);
-            return res.status(201).send({ status: "OK", data: usuarioActualizado});
-        } catch (error) {
-            return res
-                .status(error?.status || 500)
-                .send({ status: "Fallo", data: { error: error?.message || error } });
-        }
-    }
+    //     try {
+    //         const usuarioActualizado = await this.service.actualizarPerfil(usuario, perfilUsuario.idUsuario);
+    //         return res.status(201).send({ status: "OK", data: usuarioActualizado});
+    //     } catch (error) {
+    //         return res
+    //             .status(error?.status || 500)
+    //             .send({ status: "Fallo", data: { error: error?.message || error } });
+    //     }
+    // }
 }
 

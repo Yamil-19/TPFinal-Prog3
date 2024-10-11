@@ -1,7 +1,8 @@
 document.getElementById('login-form').addEventListener("submit", async (e) => {
     e.preventDefault()
     try {
-        const response = await fetch("http://localhost:3000/api/login", {
+        console.log("ok")
+        const response = await fetch("http://localhost:3000/login", {
             method: 'POST',
             headers:  {'Content-Type' : 'application/json'} ,
             body: JSON.stringify({
@@ -12,6 +13,7 @@ document.getElementById('login-form').addEventListener("submit", async (e) => {
             console.log('Errooor')
         } else {
             const resultado = await response.json()
+            console.log("okk")
             window.location.href = resultado.redirect;
         }
     } catch (error) {

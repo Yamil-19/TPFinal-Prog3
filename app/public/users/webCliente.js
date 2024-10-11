@@ -28,7 +28,8 @@ document.getElementById('reclamoCliente-form').addEventListener("submit", async 
 document.getElementById('cerrarSesion').addEventListener("click", () => {
     document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     alert("Cookie eliminada");
-    document.location.href = '/api/';
+    console.log("se apretó cerrar sesion")
+    document.location.href = '/';
 })
 
 const obtenerReclamo = async () => {

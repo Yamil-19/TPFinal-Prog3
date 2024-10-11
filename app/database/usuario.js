@@ -1,12 +1,8 @@
 import bcryptjs from "bcryptjs" 
 import { conexion } from './conexion.js';
-import Cliente  from "./db_cliente.js";
 
 
-export default class Usuario {
-    constructor() {
-        this.cliente = new Cliente()
-    }
+export default class Usuarios {
 
     obtenerDatos = async ({nombre, contrasenia}) => {
         try {
@@ -89,33 +85,26 @@ export default class Usuario {
         // console.log(contraCorrecta)
         
         if (contraCorrecta) {
-            if (resultado[0].descripcion === 'Cliente') {
-                return '/api/cliente'
-            }
-            if (resultado[0].descripcion === 'Empleado') {
-                return '/api/empleado'
-            }
-            if (resultado[0].descripcion === 'Administrador') {
-                return '/api/administrador'
-            }
+            return `/${resultado[0].descripcion.toLowerCase()}`
+
         } else {
             console.log('Contraseña incorrecta')
         };  
     }
     
-    actualizarPerfil = async (usuarioActualizado, idUsuario) => {
-        try {
-            const sql = `UPDATE usuarios SET ? WHERE idUsuario = ?`
-            const [resultado] = await conexion.query(sql, [usuarioActualizado, idUsuario])
+    // actualizarPerfil = async (usuarioActualizado, idUsuario) => {
+    //     try {
+    //         const sql = `UPDATE usuarios SET ? WHERE idUsuario = ?`
+    //         const [resultado] = await conexion.query(sql, [usuarioActualizado, idUsuario])
            
-            if (resultado.affectedRows === 0) {
-                console.log('No se pudo modificar el perfil')
-            }
-            return resultado
+    //         if (resultado.affectedRows === 0) {
+    //             console.log('No se pudo modificar el perfil')
+    //         }
+    //         return resultado
 
-        } catch (error) {
-                console.log('Error al actualizar el perfil: ', error)
-                throw new Error('Error al actualizar el perfil')
-         }
-    }
+    //     } catch (error) {
+    //             console.log('Error al actualizar el perfil: ', error)
+    //             throw new Error('Error al actualizar el perfil')
+    //      }
+    // }
 }

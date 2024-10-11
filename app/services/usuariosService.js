@@ -1,6 +1,6 @@
-import Administrador from "../database/db_administrador.js";
-import Cliente from "../database/db_cliente.js";
-import Usuario from "../database/usuario.js";
+import Administradores from "../database/db_administrador.js";
+import Clientes from "../database/clientes.js";
+import Usuarios from "../database/usuario.js";
 import { email } from "../v1/urlPages/url.js";
 import nodemailer from 'nodemailer'
 import handlebars from "handlebars";
@@ -10,53 +10,49 @@ import bcryptjs from "bcryptjs"
 dotenv.config()
 
 
-export default class UsuarioServices {
+export default class UsuariosService {
     constructor() {
-        this.usuario = new Usuario()
-        this.cliente = new Cliente()
-        this.administrador = new Administrador()
+        this.usuarios = new Usuarios()
+        this.clientes = new Clientes()
+        this.administradores = new Administradores()
     }
 
     obtenerDatos = (usuario) => {
-        return this.usuario.obtenerDatos(usuario)
+        return this.usuarios.obtenerDatos(usuario)
     }
 
     register = (usuario) => {
-        return this.usuario.register(usuario)
+        return this.usuarios.register(usuario)
     }
 
     iniciarSesion = (usuario) => {
-        return this.usuario.iniciarSesion(usuario)
+        return this.usuarios.iniciarSesion(usuario)
     }
     
-    actualizarPerfil = async (datos, idUsuario) => {
-        // console.log(datos)
-        if (datos.contrasenia) {
-            const nuevaContraseña = datos.contrasenia
-            const salt = await bcryptjs.genSalt(5)
-            const constraseñaHasheada = await bcryptjs.hash(nuevaContraseña, salt)
-            datos.contrasenia = constraseñaHasheada 
-            // console.log('VAMAAAA')
-        }
-        // console.log(datos)
-        return this.usuario.actualizarPerfil(datos, idUsuario)
-    }
+    // actualizarPerfil = async (datos, idUsuario) => {
+    //     if (datos.contrasenia) {
+    //         const nuevaContraseña = datos.contrasenia
+    //         const salt = await bcryptjs.genSalt(5)
+    //         const constraseñaHasheada = await bcryptjs.hash(nuevaContraseña, salt)
+    //         datos.contrasenia = constraseñaHasheada 
+    //     }
+    //     return this.usuarios.actualizarPerfil(datos, idUsuario)
+    // }
 
     crearReclamo = (reclamo) => {
         const reclamoData = {
             ...reclamo, 
             fechaCreado:  new Date().toISOString().replace('T', ' ').replace('Z', '')
         }
-        return this.cliente.crearReclamo(reclamoData)
+        return this.clientes.crearReclamo(reclamoData)
     }
 
     obtenerReclamo = (idUsuario) => {
-        return this.cliente.obtenerReclamo(idUsuario)
+        return this.clientes.obtenerReclamo(idUsuario)
     }
     
     cancelarReclamo = (idReclamoEstado, correoElectronico, nom) => { 
         const plantilla = email
-        // console.log(email)
         const template = handlebars.compile(plantilla)
         const datos = {
             nombre: nom,
@@ -84,19 +80,19 @@ export default class UsuarioServices {
                 console.log('Email sent: ', info.response)
             }
         })
-        return this.cliente.cancelarReclamo(idReclamoEstado)
+        return this.clientes.cancelarReclamo(idReclamoEstado)
     }
 
     obtenerReclamosTipo = () => {
-        return this.administrador.obtenerReclamosTipo()
+        return this.administradores.obtenerReclamosTipo()
     }
 
     modificarReclamoTipo = (id, desc, act) => {
-        return this.administrador.modificarReclamoTipo(id, desc, act)
+        return this.administradores.modificarReclamoTipo(id, desc, act)
     }
     
     agregarReclamoTipo = (reclamoTipo) => {
-        return this.administrador.agregarReclamoTipo(reclamoTipo)
+        return this.administradores.agregarReclamoTipo(reclamoTipo)
     }
 
 }
