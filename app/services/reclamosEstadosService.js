@@ -8,20 +8,21 @@ export default class ReclamosEstadosService {
         this.reclamosEstados = new ReclamosEstados()
     }
 
-    obtenerTodos = () => {
-        return this.reclamosEstados.obtenerTodos();
+    obtenerTodos = async () => {
+        return await this.reclamosEstados.obtenerTodos();
     }
     
-    obtenerPorId = (id) => {
-        return this.reclamosEstados.obtenerPorId(id);
+    obtenerPorId = async (id) => {
+        return await this.reclamosEstados.obtenerPorId(id);
     }
 
-    crear = (reclamosEstado) => {
-        return this.reclamosEstados.crear(reclamosEstado);
+    agregar = async (descripcion) => {
+        return await this.reclamosEstados.agregar(descripcion);
     }
 
-    modificar = (id) => {
-        return this.reclamosEstados.modificar(id);
+    modificar = async (id, descripcion) => {
+        await this.reclamosEstados.obtenerPorId(id);
+        return await this.reclamosEstados.modificar(id, descripcion);
     }
 
 }

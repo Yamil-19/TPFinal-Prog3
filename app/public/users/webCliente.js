@@ -101,7 +101,7 @@ const cancelarReclamo = async (idReclamoEstado, reclamo) => {
             
             reclamo.innerHTML = ''
         }
-    } catch (error){
+    } catch (error) {
         console.log('Error al cancelar el reclamo: ', error)
     }
     

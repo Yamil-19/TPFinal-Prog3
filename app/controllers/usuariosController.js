@@ -12,15 +12,17 @@ export default class UsuariosController {
 
     register = async (req, res) => {
         const { body } = req;
+        validateUser(body)
+        
+        // if (!body.nombre || !body.apellido || !body.correoElectronico || !body.contrasenia || !body.descripcion) {
+        //     return res.status(404).send({
+        //                 status: "Fallo",
+        //                 data: {
+        //                     error: "Uno de los datos falta o es vacío."
+        //                 }
+        //         });
+        // }
 
-        if (!body.nombre || !body.apellido || !body.correoElectronico || !body.contrasenia || !body.descripcion) {
-            return res.status(404).send({
-                        status: "Fallo",
-                        data: {
-                            error: "Uno de los datos falta o es vacío."
-                        }
-                });
-        }
 
         const usuario = {
             nombre: body.nombre,
@@ -76,7 +78,7 @@ export default class UsuariosController {
         }
     }
     
-    crearReclamo = async (req, res) => {
+    agregarReclamo = async (req, res) => {
     
         const { body } = req;
         
@@ -108,7 +110,7 @@ export default class UsuariosController {
             idUsuarioCreador: idUsuarioCreador.idUsuario
         };
         try {
-            const reclamoCliente = await this.service.crearReclamo(reclamo);
+            const reclamoCliente = await this.service.agregarReclamo(reclamo);
 
             return res.status(201).send({ status: "OK", data: reclamoCliente});
         } catch (error) {
@@ -125,7 +127,7 @@ export default class UsuariosController {
             const reclamoObtenido = await this.service.obtenerReclamo(idUsuarioCreador)
             // console.log(reclamoObtenido)
             return res.status(200).send(reclamoObtenido);
-        } catch (error){
+        } catch (error) {
             return res
                 .status(error?.status || 500)
                 .send({ status: "Fallo", data: { error: error?.message || error } });
@@ -136,7 +138,7 @@ export default class UsuariosController {
         try {
             const reclamosTipoObtenidos = await this.service.obtenerReclamosTipo()
             return res.status(200).send(reclamosTipoObtenidos);
-        } catch (error){
+        } catch (error) {
             return res
                 .status(error?.status || 500)
                 .send({ status: "Fallo", data: { error: error?.message || error } });
@@ -189,39 +191,39 @@ export default class UsuariosController {
         try {
             const reclamoCancelado = await this.service.cancelarReclamo(idReclamoEstado, correoElectronico, nombre)
             return res.status(200).send(reclamoCancelado);
-        } catch (error){
+        } catch (error) {
             return res
                 .status(error?.status || 500)
                 .send({ status: "Fallo", data: { error: error?.message || error } });
         }
     }
 
-    // actualizarPerfil = async (req, res) => {
-    //     const {body} = req
-    //     const perfilUsuario = authorization.revisarCookie(req);
+    actualizarPerfil = async (req, res) => {
+        const {body} = req
+        const perfilUsuario = authorization.revisarCookie(req);
 
-    //     const usuario = {}
-    //     if (body.nombre !== '') {
-    //         usuario.nombre = body.nombre
-    //     }
-    //     if (body.apellido !== '') {
-    //         usuario.apellido = body.apellido
-    //     }
-    //     if (body.correoElectronico !== '') {
-    //         usuario.correoElectronico = body.correoElectronico
-    //     }
-    //     if (body.contraseña !== '') {
-    //         usuario.contrasenia = body.contraseña
-    //     }
+        const usuario = {}
+        if (body.nombre !== '') {
+            usuario.nombre = body.nombre
+        }
+        if (body.apellido !== '') {
+            usuario.apellido = body.apellido
+        }
+        if (body.correoElectronico !== '') {
+            usuario.correoElectronico = body.correoElectronico
+        }
+        if (body.contraseña !== '' || body.contrasenia !== null) {
+            usuario.contrasenia = body.contraseña
+        }
 
-    //     try {
-    //         const usuarioActualizado = await this.service.actualizarPerfil(usuario, perfilUsuario.idUsuario);
-    //         return res.status(201).send({ status: "OK", data: usuarioActualizado});
-    //     } catch (error) {
-    //         return res
-    //             .status(error?.status || 500)
-    //             .send({ status: "Fallo", data: { error: error?.message || error } });
-    //     }
-    // }
+        try {
+            const usuarioActualizado = await this.service.actualizarPerfil(usuario, perfilUsuario.idUsuario);
+            return res.status(201).send({ status: "OK", data: usuarioActualizado});
+        } catch (error) {
+            return res
+                .status(error?.status || 500)
+                .send({ status: "Fallo", data: { error: error?.message || error } });
+        }
+    }
 }
 

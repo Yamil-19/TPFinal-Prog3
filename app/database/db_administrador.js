@@ -49,8 +49,8 @@ export default class Administrador {
             console.log(resultado)
             return resultado
         } catch (error) {
-            console.log('Error al crear el tipo de reclamo: ', error)
-            throw new Error('Error al crear el tipo de reclamo')
+            console.log('Error al agregar el tipo de reclamo: ', error)
+            throw new Error('Error al agregar el tipo de reclamo')
         }
     }
 }

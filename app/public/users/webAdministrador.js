@@ -136,7 +136,7 @@ const activarReclamoTipo = async (idReclamoTipo, desc, fila) => {
             fila.children[1].children[4].disabled = false
 
         }
-    } catch (error){
+    } catch (error) {
         console.log('Error al activar el reclamoTipo: ', error)
     }
 }
@@ -158,7 +158,7 @@ const desactivarReclamoTipo = async (idReclamoTipo, desc, fila) => {
             fila.children[1].children[3].disabled = false
             fila.children[1].children[4].disabled = true
         }
-    } catch (error){
+    } catch (error) {
         console.log('Error al desactivar el reclamoTipo: ', error)
     }
 }
@@ -178,7 +178,7 @@ document.getElementById('form_tipo').addEventListener('submit', async (e) => {
         if (!response) {
             console.log('Error al cancelar el reclamo')
         }
-    } catch (error){
+    } catch (error) {
         console.log('Error al cancelar el reclamo: ', error)
     }
 })

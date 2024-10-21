@@ -17,7 +17,7 @@ export default class ClientesController {
             const reclamoObtenido = await this.service.obtenerReclamo(idUsuarioCreador)
             // console.log(reclamoObtenido)
             return res.status(200).send(reclamoObtenido);
-        } catch (error){
+        } catch (error) {
             return res
                 .status(error?.status || 500)
                 .send({ status: "Fallo", data: { error: error?.message || error } });

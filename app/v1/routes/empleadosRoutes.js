@@ -1,17 +1,15 @@
 import express from 'express'
-import UsuarioController from '../../controllers/usuariosController.js'
+import EmpleadosController from '../../controllers/empleadosController.js'
 
-const usuarioController = new UsuarioController()
+const empleadosController = new EmpleadosController()
 const router = express.Router()
 
-router.get('/')
+router.get('/', empleadosController.obtenerTodos)
 
-router.get('/:idUsuario')
+router.get('/:idUsuario', empleadosController.obtenerPorId)
 
-router.get('/:idUsuarioTipo')
+router.post('/', empleadosController.agregar)
 
-router.post('/')
-
-router.patch('/:idUsuario')
+router.patch('/:idUsuario', empleadosController.modificar)
 
 export { router }

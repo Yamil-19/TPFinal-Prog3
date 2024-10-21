@@ -8,20 +8,23 @@ export default class ReclamosTiposService {
         this.reclamosTipos = new ReclamosTipos()
     }
 
-    obtenerTodos = () => {
-        return this.reclamosTipos.obtenerTodos();
+    obtenerTodos = async () => {
+        return await this.reclamosTipos.obtenerTodos();
     }
     
-    obtenerPorId = (id) => {
-        return this.reclamosTipos.obtenerPorId(id);
+    obtenerPorId = async (id) => {
+        return await this.reclamosTipos.obtenerPorId(id);
     }
 
-    crear = (reclamosTipo) => {
-        return this.reclamosTipos.crear(reclamosTipo);
+    agregar = async (descripcion) => {
+        return await this.reclamosTipos.agregar(descripcion);
     }
 
-    modificar = (id) => {
-        return this.reclamosTipos.modificar(id);
+    modificar = async (id, descripcion) => {
+        // verificar que el ID exista
+        await this.reclamosTipos.obtenerPorId(id);
+        
+        return await this.reclamosTipos.modificar(id, descripcion);
     }
 
 }

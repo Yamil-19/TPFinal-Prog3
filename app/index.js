@@ -44,8 +44,8 @@ app.use('/api/v1/reclamos', v1ReclamosRouter)
 app.use('/api/reclamosTipos', v1ReclamosTiposRouter)
 app.use('/api/v1/reclamosTipos', v1ReclamosTiposRouter)
 
-app.use('/', v1UsuariosRouter)
-app.use('/v1/', v1UsuariosRouter)
+app.use('/api', v1UsuariosRouter)
+app.use('/v1/api', v1UsuariosRouter)
 
 const puerto = process.env.PUERTO || 3000
 

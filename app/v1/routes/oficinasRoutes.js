@@ -1,16 +1,16 @@
 import express from 'express'
-import UsuarioController from '../../controllers/usuariosController.js'
+import OficinasController from '../../controllers/oficinasController.js'
 
-const usuarioController = new UsuarioController()
+const oficinasController = new OficinasController()
 const router = express.Router()
 
-router.get('/')
+router.get('/', oficinasController.obtenerTodos)
 
-router.get('/:idOficina')
+router.get('/:idOficina', oficinasController.obtenerPorId)
 
-router.post('/')
+router.post('/', oficinasController.agregar)
 
-router.patch('/:idOficina')
+router.patch('/:idOficina', oficinasController.modificar)
 
 router.post('/agregar_empleado')
 

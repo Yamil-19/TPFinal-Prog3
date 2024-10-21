@@ -92,19 +92,19 @@ export default class Usuarios {
         };  
     }
     
-    // actualizarPerfil = async (usuarioActualizado, idUsuario) => {
-    //     try {
-    //         const sql = `UPDATE usuarios SET ? WHERE idUsuario = ?`
-    //         const [resultado] = await conexion.query(sql, [usuarioActualizado, idUsuario])
+    actualizarPerfil = async (datos, idUsuario) => {
+        try {
+            const sql = `UPDATE usuarios SET ? WHERE idUsuario = ?`
+            const [resultado] = await conexion.query(sql, [datos, idUsuario])
            
-    //         if (resultado.affectedRows === 0) {
-    //             console.log('No se pudo modificar el perfil')
-    //         }
-    //         return resultado
+            if (resultado.affectedRows === 0) {
+                console.log('No se pudo modificar el perfil')
+            }
+            return resultado
 
-    //     } catch (error) {
-    //             console.log('Error al actualizar el perfil: ', error)
-    //             throw new Error('Error al actualizar el perfil')
-    //      }
-    // }
+        } catch (error) {
+                console.log('Error al actualizar el perfil: ', error)
+                throw new Error('Error al actualizar el perfil')
+         }
+    }
 }

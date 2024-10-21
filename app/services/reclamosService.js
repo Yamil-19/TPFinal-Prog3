@@ -8,16 +8,21 @@ export default class ReclamosService {
         this.reclamos = new Reclamos()
     }
 
-    obtenerTodos = () => {
-        return this.reclamos.obtenerTodos();
+    obtenerTodos = async () => {
+        return await this.reclamos.obtenerTodos();
     }
     
-    obtenerPorId = (id) => {
-        return this.reclamos.obtenerPorId(id);
+    obtenerPorId = async (id) => {
+        return await this.reclamos.obtenerPorId(id);
     }
 
-    crear = (reclamo) => {
-        return this.reclamos.crear(reclamo);
+    agregar = (nuevoReclamo) => {
+        nuevoReclamo = {
+            ...nuevoReclamo,
+            fechaCreado: new Date().toISOString(),
+            // idReclamoEstado: 1
+        }
+        return this.reclamos.agregar(nuevoReclamo);
     }
 
     modificar = (id) => {

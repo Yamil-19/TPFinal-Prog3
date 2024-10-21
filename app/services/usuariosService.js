@@ -29,22 +29,22 @@ export default class UsuariosService {
         return this.usuarios.iniciarSesion(usuario)
     }
     
-    // actualizarPerfil = async (datos, idUsuario) => {
-    //     if (datos.contrasenia) {
-    //         const nuevaContraseña = datos.contrasenia
-    //         const salt = await bcryptjs.genSalt(5)
-    //         const constraseñaHasheada = await bcryptjs.hash(nuevaContraseña, salt)
-    //         datos.contrasenia = constraseñaHasheada 
-    //     }
-    //     return this.usuarios.actualizarPerfil(datos, idUsuario)
-    // }
+    actualizarPerfil = async (datos, idUsuario) => {
+        if (datos.contrasenia) {
+            const nuevaContraseña = datos.contrasenia
+            const salt = await bcryptjs.genSalt(5)
+            const constraseñaHasheada = await bcryptjs.hash(nuevaContraseña, salt)
+            datos.contrasenia = constraseñaHasheada 
+        }
+        return this.usuarios.actualizarPerfil(datos, idUsuario)
+    }
 
-    crearReclamo = (reclamo) => {
+    agregarReclamo = (reclamo) => {
         const reclamoData = {
             ...reclamo, 
             fechaCreado:  new Date().toISOString().replace('T', ' ').replace('Z', '')
         }
-        return this.clientes.crearReclamo(reclamoData)
+        return this.clientes.agregarReclamo(reclamoData)
     }
 
     obtenerReclamo = (idUsuario) => {

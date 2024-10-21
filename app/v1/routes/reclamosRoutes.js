@@ -1,18 +1,18 @@
 import express from 'express'
-import UsuarioController from '../../controllers/usuariosController.js'
+import ReclamosController from '../../controllers/reclamosController.js'
 
-const usuarioController = new UsuarioController()
+const reclamosController = new ReclamosController()
 const router = express.Router()
 
-router.get('/')
+router.get('/', reclamosController.obtenerTodos)
 
-router.get('/:idReclamo')
+router.get('/:idReclamo', reclamosController.obtenerPorId)
 // router.get('/:idReclamoEstado')
 // router.get('/:idReclamoTipo')
 // router.get('/:idUsuario')
 
-router.post('/')
+router.post('/', reclamosController.agregar)
 
-router.patch('/:idReclamo')
+router.patch('/:idReclamo', reclamosController.modificar)
 
 export { router }

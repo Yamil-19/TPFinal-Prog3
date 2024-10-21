@@ -1,4 +1,5 @@
 import Oficinas from '../database/oficinas.js';
+import ReclamosTipos from '../database/reclamosTipos.js';
 import dotenv from 'dotenv';
 
 dotenv.config()
@@ -6,22 +7,32 @@ dotenv.config()
 export default class OficinasService {
     constructor() {
         this.oficinas = new Oficinas()
+        this.reclamosTipos = new ReclamosTipos()
     }
 
-    obtenerTodos = () => {
-        return this.oficinas.obtenerTodos();
+    obtenerTodos = async () => {
+        return await this.oficinas.obtenerTodos();
     }
     
-    obtenerPorId = (id) => {
-        return this.oficinas.obtenerPorId(id);
+    obtenerPorId = async (id) => {
+        return await this.oficinas.obtenerPorId(id);
     }
 
-    crear = (oficina) => {
-        return this.oficinas.crear(oficina);
+    agregar = async (datos) => {
+        // verificar que el ID de reclamoTipo exista
+        await this.reclamosTipos.obtenerPorId(datos.idReclamoTipo);
+
+        return await this.oficinas.agregar(datos);
     }
 
-    modificar = (id) => {
-        return this.oficinas.modificar(id);
+    modificar = async (id, datos) => {
+        // verificar que el ID exista
+        await this.oficinas.obtenerPorId(id);
+
+        // verificar que el ID de reclamoTipo exista
+        await this.reclamosTipos.obtenerPorId(datos.idReclamoTipo);
+
+        return await this.oficinas.modificar(id, datos);
     }
 
 }

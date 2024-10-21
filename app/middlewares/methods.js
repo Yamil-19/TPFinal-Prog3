@@ -8,20 +8,18 @@ function verificarUsuario(req, res, next) {
     const logueado = revisarCookie(req)
     if (!logueado) {
         return res.redirect('/')
-    } else if (ruta[2] === logueado.descripcion.toLowerCase()){
-        next()
-    } else if (ruta[1] === logueado.descripcion.toLowerCase()){
-        next()
-    // } else if (ruta[2] === "cliente" && logueado.descripcion === "Cliente") {
-    //     return next();
-    // } else if (ruta[2] === "empleado" && logueado.descripcion === "Empleado") {
-    //     return next();
-    // } else if (ruta[2] === "administrador" && logueado.descripcion === "Administrador") {
-    //     return next();
+    } else if (ruta[2] === "cliente" && logueado.descripcion === "Cliente") {
+        return next();
+    } else if (ruta[2] === "empleado" && logueado.descripcion === "Empleado") {
+        return next();
+    } else if (ruta[2] === "administrador" && logueado.descripcion === "Administrador") {
+        return next();
     } else {
         res.send({error: "No tenes acceso"})
     }
 }
+
+
 
 function estaLogueado(req, res, next) {
     const logueado = revisarCookie(req)
