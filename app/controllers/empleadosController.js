@@ -60,5 +60,4 @@ export default class EmpleadosController {
             return res.status(estado).json({ status: estado, data: { error: error.message } });
         }
     }
-
 }

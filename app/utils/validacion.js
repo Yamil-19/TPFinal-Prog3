@@ -44,6 +44,12 @@ export function validarOficina(datos) {
 
 // Esquemas de validacion
 const esquemas = {
+    // Esquema de ID
+    id: Joi.number().integer().positive().required(),
+
+    // Esquema de descripcion
+    descripcion: Joi.string().required(),
+
     // Esquemas de usuario
     usuarioRequerido: Joi.object({
         nombre: Joi.string().required(),
@@ -58,12 +64,6 @@ const esquemas = {
         contrasenia: Joi.string()
     }),
 
-    // Esquema de ID
-    id: Joi.number().integer().positive().required(),
-
-    // Esquema de descripcion
-    descripcion: Joi.string().required(),
-
     // Esquemas de oficina
     oficinaRequerida: Joi.object({
         nombre: Joi.string().required(),
@@ -72,6 +72,21 @@ const esquemas = {
     oficinaOpcional: Joi.object({
         nombre: Joi.string(),
         idReclamoTipo: Joi.number().integer().positive()
+    }),
+
+    // Esquema de reclamo
+    reclamoRequerido: Joi.object({
+        asunto: Joi.string().required(),
+        descripcion: Joi.string().allow(''),
+        idReclamoTipo: Joi.number().integer().positive().required(),
+        idUsuarioCreador: Joi.number().integer().positive().required()
+    }),
+    reclamoOpcional: Joi.object({
+        asunto: Joi.string(),
+        descripcion: Joi.string(),
+        idReclamoTipo: Joi.number().integer().positive(),
+        idReclamoEstado: Joi.number().integer().positive(),
+        idUsuarioFinalizador: Joi.number().integer().positive()
     })
 }
 

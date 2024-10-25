@@ -1,5 +1,5 @@
 import ReclamosService from "../services/reclamosService.js";
-import { validarID, validarOficina } from "../utils/validacion.js"
+import { validar } from "../utils/validacion.js"
 import dotenv from 'dotenv';
 
 dotenv.config()
@@ -11,43 +11,110 @@ export default class ReclamosController {
 
     obtenerTodos = async (req, res) => {
         try {
-            const reclamosObtenidos = await this.service.obtenerTodos()
+            const reclamosObtenidos = await this.service.obtenerTodos();
             return res.status(200).json(reclamosObtenidos);
         } catch (error) {
-            return res.status(500).json({ status: "500", data: { error: error.message } });
+            const estado = error.statusCode || 500;
+            return res.status(estado).json({ status: estado, data: { error: error.message } });
         }
     }
     
-    obtenerPorId = async (req, res) => {
-        const idReclamo = parseInt(req.params.idReclamo);
-        if (!validarID(idReclamo)) {
-            return res.status(400).json({ status: "400", data: { error: "ID invalido" } });
-        }
+    obtenerPorIdReclamo = async (req, res) => {
         try {
-            const reclamo = await this.service.obtenerPorId(idReclamo)
+            const id = req.params.idReclamo;
+            validar(id, 'id');
+
+            const reclamo = await this.service.obtenerPorIdReclamo(id);
             return res.status(200).json(reclamo);
         } catch (error) {
-            return res.status(error.statusCode).json({ status: error.statusCode, data: { error: error.message } });
+            const estado = error.statusCode || 500;
+            return res.status(estado).json({ status: estado, data: { error: error.message } });
+        }
+    }
+
+    obtenerPorIdReclamoEstado = async (req, res) => {
+        try {
+            const id = req.params.idReclamoEstado;
+            validar(id, 'id');
+
+            const reclamo = await this.service.obtenerPorIdReclamoEstado(id);
+            return res.status(200).json(reclamo);
+        } catch (error) {
+            const estado = error.statusCode || 500;
+            return res.status(estado).json({ status: estado, data: { error: error.message } });
+        }
+    }
+
+    obtenerPorIdReclamoTipo = async (req, res) => {
+        try {
+            const id = req.params.idReclamoTipo;
+            validar(id, 'id');
+
+            const reclamo = await this.service.obtenerPorIdReclamoTipo(id);
+            return res.status(200).json(reclamo);
+        } catch (error) {
+            const estado = error.statusCode || 500;
+            return res.status(estado).json({ status: estado, data: { error: error.message } });
+        }
+    }
+
+    obtenerPorIdUsuarioCreador = async (req, res) => {
+        try {
+            const id = req.params.idUsuarioCreador;
+            validar(id, 'id');
+
+            const reclamo = await this.service.obtenerPorIdUsuarioCreador(id);
+            return res.status(200).json(reclamo);
+        } catch (error) {
+            const estado = error.statusCode || 500;
+            return res.status(estado).json({ status: estado, data: { error: error.message } });
         }
     }
 
     agregar = async (req, res) => {
-        const datos = {
-            asunto: req.body.asunto,
-            descripcion: req.body.descripcion,
-            idUsuarioCreador: req.body.idUsuarioCreador,
-            idReclamoTipo: req.body.idReclamoTipo
-        }
         try {
-            const nuevoReclamo = await this.service.agregar(datos)
-            return res.status(200).json(nuevoReclamo)
-        } catch(error) {
-            return res.status(500).json({})
+            const datos = req.body;
+            validar(datos, 'reclamoRequerido');
+            
+            const nuevoReclamo = await this.service.agregar(datos);
+            return res.status(200).json(nuevoReclamo);
+        } catch (error) {
+            const estado = error.statusCode || 500;
+            return res.status(estado).json({ status: estado, data: { error: error.message } });
         }
     }
     
     modificar = async (req, res) => {
+        try {
+            const id = req.params.idReclamo;
+            validar(id, 'id');
 
+            const datos = req.body;
+            validar(datos, 'reclamoOpcional');
+            
+            const reclamoModificado = await this.service.modificar(id, datos);
+            return res.status(200).json(reclamoModificado);
+        } catch (error) {
+            const estado = error.statusCode || 500;
+            return res.status(estado).json({ status: estado, data: { error: error.message } });
+        }
     }
 
+    atenderReclamo = async (req, res) => {
+        try {
+            const idReclamo = req.params.idReclamo;
+            validar(idReclamo, 'id');
+
+            const datos = {
+                idReclamoEstado: req.body.idReclamoEstado
+            }
+            validar(datos.idReclamoEstado, 'id');
+
+            const reclamoAtendido = await this.service.atenderReclamo(idReclamo, datos);
+            return res.status(200).json(reclamoAtendido);
+        } catch (error) {
+            const estado = error.statusCode || 500;
+            return res.status(estado).json({ status: estado, data: { error: error.message } });
+        }
+    }
 }

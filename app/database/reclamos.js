@@ -12,37 +12,119 @@ export default class Reclamos {
         }
     }
     
-    obtenerPorId = async (id) => {
+    obtenerPorIdReclamo = async (id) => {
         try {
             const sql = `SELECT * FROM reclamos WHERE idReclamo = ?;`;
             const [resultado] = await conexion.query(sql, [id]);
             if (resultado.length === 0) {
                 throw new ApiError('ID no encontrado', 404);
             } else {
-                return resultado
+                return resultado;
             }
         } catch (error) {
             if (error instanceof ApiError) {
-                throw error
+                throw error;
+            } else {
+                throw new ApiError('Error en el servidor', 500);
+            }
+        }
+    }
+    obtenerPorIdReclamoEstado = async (id) => {
+        try {
+            const sql = `SELECT * FROM reclamos WHERE idReclamoEstado = ?;`;
+            const [resultado] = await conexion.query(sql, [id]);
+            if (resultado.length === 0) {
+                throw new ApiError('ID no encontrado', 404);
+            } else {
+                return resultado;
+            }
+        } catch (error) {
+            if (error instanceof ApiError) {
+                throw error;
             } else {
                 throw new ApiError('Error en el servidor', 500)
+            }
+        }
+    }
+    obtenerPorIdReclamoTipo = async (id) => {
+        try {
+            const sql = `SELECT * FROM reclamos WHERE idReclamoTipo = ?;`;
+            const [resultado] = await conexion.query(sql, [id]);
+            if (resultado.length === 0) {
+                throw new ApiError('ID no encontrado', 404);
+            } else {
+                return resultado;
+            }
+        } catch (error) {
+            if (error instanceof ApiError) {
+                throw error;
+            } else {
+                throw new ApiError('Error en el servidor', 500);
+            }
+        }
+    }
+    obtenerPorIdUsuarioCreador = async (id) => {
+        try {
+            const sql = `SELECT * FROM reclamos WHERE idUsuarioCreador = ?;`;
+            const [resultado] = await conexion.query(sql, [id]);
+            if (resultado.length === 0) {
+                throw new ApiError('ID no encontrado', 404);
+            } else {
+                return resultado;
+            }
+        } catch (error) {
+            if (error instanceof ApiError) {
+                throw error;
+            } else {
+                throw new ApiError('Error en el servidor', 500);
             }
         }
     }
 
     agregar = async (datos) => {
         try {
-            const sql = `INSERT INTO reclamos (asunto, descripcion, fechaCreado, idReclamoEstado, idReclamoTipo, idUsuarioCreador) VALUES (?,?,?,1,?,?)`
-            const [resultado] = await conexion.query(sql, [datos])
-            return resultado
+            const sql = `INSERT INTO reclamos SET ?;`;
+            const [resultado] = await conexion.query(sql, [datos]);
+
+            if (resultado.affectedRows === 1) {
+                const [nuevoReclamo] = await conexion.query(`SELECT * FROM reclamos WHERE idReclamo = ?`, [resultado.insertId]);
+                return nuevoReclamo[0];
+            } else {
+                throw new ApiError('No se pudo agregar el reclamo', 500);
+            }
         } catch (error) {
-            throw new ApiError('Error en el servidor', 500)
+            if (error instanceof ApiError) {
+                throw error;
+            } else {
+                throw new ApiError('Error en el servidor', 500);
+            }
         }
     }
 
-    modificar = async () => {
-        
-    }
+    modificar = async (id, datos) => {
+        try {
+            const sql = `UPDATE reclamos SET ? WHERE idReclamo = ?`;
+            const [resultado] = await conexion.query(sql, [datos, id]);
+
+            if (resultado.affectedRows === 1) {
+                const [reclamo] = await conexion.query(`SELECT * FROM reclamos WHERE idReclamo = ?`, [id]);
+                return reclamo[0];
+            } else {
+                throw new ApiError('No se pudo modificar el reclamo', 500);
+            }
+        } catch (error) {
+            if (error instanceof ApiError) {
+                throw error;
+            } else {
+                throw new ApiError('Error en el servidor', 500);
+            }
+        }
+    }  
+
+
+
+
+
     
     agregarReclamo = async ({tipo, asunto, descripcion, fechaCreado, idUsuarioCreador}) => {
         try {
