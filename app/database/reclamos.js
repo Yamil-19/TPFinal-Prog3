@@ -2,10 +2,19 @@ import { conexion } from "./conexion.js";
 import ApiError from "../utils/manejoDeErrores.js";
 
 export default class Reclamos {   
-    obtenerTodos = async () => {
+    obtenerTodos = async (idUsuarioTipo, id) => {
         try {
-            const sql = `SELECT * FROM reclamos;`;
-            const [resultado] = await conexion.query(sql);
+            let sql = `SELECT * FROM reclamos `;
+            
+            if (idUsuarioTipo === 2) {
+                sql += `WHERE idReclamoTipo = ?`;
+            }
+
+            if (idUsuarioTipo === 3) {
+                sql += `WHERE idUsuarioCreador = ?`;
+            }
+
+            const [resultado] = await conexion.query(sql, [id]);
             return resultado;
         } catch (error) {
             throw new Error('Error en el servidor');

@@ -13,6 +13,8 @@ import { router as v1ReclamosEstadosRouter } from "./v1/routes/reclamosEstadosRo
 import { router as v1ReclamosRouter } from "./v1/routes/reclamosRoutes.js";
 import { router as v1ReclamosTiposRouter } from "./v1/routes/reclamosTiposRoutes.js";
 import { router as v1UsuariosRouter } from "./v1/routes/usuariosRoutes.js";
+import { router as v1AuthRouter } from "./v1/routes/authRoutes.js";
+import passport from "./middlewares/passport.js";
 
 const app = express()
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -23,6 +25,12 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(express.static(__dirname + '/public'))
 
+app.use(passport.initialize())
+app.use('/auth', v1AuthRouter)
+
+app.get('/perfil', passport.authenticate("jwt", { session: false }), (req, res) => {
+    res.json({ message: 'Perfil del usuario', usuario: req.user });
+});
 
 app.use('/', v1AppWebRouter)
 

@@ -15,7 +15,10 @@ export default class ReclamosTiposController {
             return res.status(200).json(tiposObtenidos);
         } catch (error) {
             const estado = error.statusCode || 500;
-            return res.status(estado).json({ status: estado, data: { error: error.message } });
+            return res.status(estado).json({ 
+                status: estado, 
+                data: { error: error.message } 
+            });
         }
     }
     
@@ -28,7 +31,10 @@ export default class ReclamosTiposController {
             return res.status(200).json(tipoObtenido);
         } catch (error) {
             const estado = error.statusCode || 500;
-            return res.status(estado).json({ status: estado, data: { error: error.message } });
+            return res.status(estado).json({ 
+                status: estado, 
+                data: { error: error.message } 
+            });
         }
     }
 
@@ -41,7 +47,10 @@ export default class ReclamosTiposController {
             return res.status(200).json(nuevoTipo);
         } catch (error) {
             const estado = error.statusCode || 500;
-            return res.status(estado).json({ status: estado, data: { error: error.message } });
+            return res.status(estado).json({ 
+                status: estado, 
+                data: { error: error.message } 
+            });
         }
     }
     
@@ -57,7 +66,10 @@ export default class ReclamosTiposController {
             return res.status(200).json(tipoModificado);
         } catch (error) {
             const estado = error.statusCode || 500;
-            return res.status(estado).json({ status: estado, data: { error: error.message } });
+            return res.status(estado).json({ 
+                status: estado, 
+                data: { error: error.message } 
+            });
         }
     }
 

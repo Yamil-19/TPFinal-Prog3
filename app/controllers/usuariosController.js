@@ -14,14 +14,14 @@ export default class UsuariosController {
         const { body } = req;
         validateUser(body)
         
-        // if (!body.nombre || !body.apellido || !body.correoElectronico || !body.contrasenia || !body.descripcion) {
-        //     return res.status(404).send({
-        //                 status: "Fallo",
-        //                 data: {
-        //                     error: "Uno de los datos falta o es vacío."
-        //                 }
-        //         });
-        // }
+        if (!body.nombre || !body.apellido || !body.correoElectronico || !body.contrasenia || !body.descripcion) {
+            return res.status(404).send({
+                        status: "Fallo",
+                        data: {
+                            error: "Uno de los datos falta o es vacío."
+                        }
+                });
+        }
 
 
         const usuario = {

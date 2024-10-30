@@ -13,14 +13,18 @@ dotenv.config()
 export default class UsuariosService {
     constructor() {
         this.usuarios = new Usuarios()
-        this.clientes = new Clientes()
-        this.administradores = new Administradores()
+        // this.clientes = new Clientes()
+        // this.administradores = new Administradores()
     }
 
     obtenerDatos = (usuario) => {
         return this.usuarios.obtenerDatos(usuario)
     }
 
+    obtenerPorIdUsuarioTipo = async (idUsuarioTipo) => {
+        return await this.usuarios.obtenerPorIdUsuarioTipo(idUsuarioTipo);
+    };
+    
     register = (usuario) => {
         return this.usuarios.register(usuario)
     }

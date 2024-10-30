@@ -1,28 +1,36 @@
 import Reclamos from '../database/reclamos.js';
 import dotenv from 'dotenv';
+import UsuariosService from './usuariosService.js';
 
 dotenv.config()
 
 export default class ReclamosService {
     constructor() {
         this.reclamos = new Reclamos()
+        this.usuarios = new UsuariosService()
     }
 
     obtenerTodos = async () => {
-        return await this.reclamos.obtenerTodos();
+        const idUsuarioTipo = 1
+        const id = 8
+        await this.usuarios.obtenerPorIdUsuarioTipo(idUsuarioTipo);
+        return await this.reclamos.obtenerTodos(idUsuarioTipo, id);
     }
     
     obtenerPorIdReclamo = async (id) => {
         return await this.reclamos.obtenerPorIdReclamo(id);
     }
+
     obtenerPorIdReclamoEstado = async (id) => {
         // verificar el idReclamoEstado
         return await this.reclamos.obtenerPorIdReclamoEstado(id);
     }
+
     obtenerPorIdReclamoTipo = async (id) => {
         // verificar el idReclamoTipo
         return await this.reclamos.obtenerPorIdReclamoTipo(id);
     }
+
     obtenerPorIdUsuarioCreador = async (id) => {
         // verificar el idUsuario
         return await this.reclamos.obtenerPorIdUsuarioCreador(id);
