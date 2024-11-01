@@ -1,5 +1,4 @@
 import { conexion } from "./conexion.js";
-import ApiError from "../utils/manejoDeErrores.js";
 
 export default class Oficinas {
     
@@ -7,11 +6,16 @@ export default class Oficinas {
         try {
             const sql = `SELECT * FROM oficinas`
             const [resultado] = await conexion.query(sql)
+
             return resultado
         } catch (error) {
-            throw new Error('Error en el servidor');
+            console.error('Error en obtenerTodos:', error);
+            return { 
+                estado: 500, 
+                mensaje: `Error en el servidor ${error}` 
+            };
         }
-    }
+    };
     
     obtenerPorId = async (id) => {
         try {
@@ -19,56 +23,64 @@ export default class Oficinas {
             const [resultado] = await conexion.query(sql, [id]);
 
             if (resultado.length === 0) {
-                throw new ApiError('ID no encontrado', 404);
-            } else {
-                return resultado
+                return null;
             }
+
+            return resultado[0];
         } catch (error) {
-            if (error instanceof ApiError) {
-                throw error
-            } else {
-                throw new ApiError('Error en el servidor', 500)
-            }
+            console.error('Error en obtenerPorId:', error);
+            return { 
+                estado: 500, 
+                mensaje: `Error en el servidor ${error}` 
+            };
         }
-    }
+    };
 
     agregar = async (datos) => {
         try {
             const sql = `INSERT INTO oficinas (nombre, idReclamoTipo, activo) VALUES (?,?,1);`;
             const [resultado] = await conexion.query(sql, [datos.nombre, datos.idReclamoTipo]);
 
-            if (resultado.affectedRows === 1) {
-                const [nuevaOficina] = await conexion.query(`SELECT * FROM oficinas WHERE idOficina = ?`, [resultado.insertId]);
-                return nuevaOficina[0];
-            } else {
-                throw new ApiError('No se pudo agregar la oficina', 500);
-            }
+            if (resultado.affectedRows === 0) {
+                return { 
+                    estado: 500, 
+                    mensaje: 'No se pudo agregar la oficina' 
+                };
+            } 
+
+            return await conexion.query('SELECT * FROM oficinas WHERE idOficina = ?', [resultado.insertId]);
         } catch (error) {
-            if (error instanceof ApiError) {
-                throw error
-            } else {
-                throw new ApiError('Error en el servidor', 500)
-            }
+            console.error('Error en agregar:', error);
+            return { 
+                estado: 500, 
+                mensaje: `Error en el servidor ${error}` 
+            };
         }
-    }
+    };
 
     modificar = async (id, datos) => {
         try {
             const sql = `UPDATE oficinas SET ? WHERE idOficina = ?`;
             const [resultado] = await conexion.query(sql, [datos, id]);
 
-            if (resultado.affectedRows === 1) {
-                const [oficina] = await conexion.query(`SELECT * FROM oficinas WHERE idOficina = ?`, [id]);
-                return oficina[0];
-            } else {
-                throw new ApiError('No se pudo modificar la oficina', 500);
+            if (resultado.affectedRows === 0) {
+                return { 
+                    estado: 500, 
+                    mensaje: 'No se pudo modificar la oficina' 
+                };
             }
+
+            return await conexion.query('SELECT * FROM oficinas WHERE idOficina = ?', [id]);
         } catch (error) {
-            if (error instanceof ApiError) {
-                throw error
-            } else {
-                throw new ApiError('Error en el servidor', 500)
-            }
+            console.error('Error en modificar:', error);
+            return { 
+                estado: 500, 
+                mensaje: `Error en el servidor ${error}` 
+            };
         }
-    }  
+    };
+    
+    // agregar empleados
+
+    // quitar empleados
 }

@@ -3,7 +3,6 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 import Usuarios from '../database/usuario.js';
-import ApiError from '../utils/manejoDeErrores.js';
 
 export default class AuthService {
     constructor(){
@@ -12,7 +11,10 @@ export default class AuthService {
 
     registrar = async (datos) => {
         // verificar si el email esta en uso
-        await this.usuarios.verificarEmail(datos.correoElectronico);
+        const resultado = await this.usuarios.obtenerPorEmail(datos.correoElectronico);
+        if (resultado) {
+
+        }
 
         // hashear contraseña
         const nuevaContraseña = datos.contrasenia;

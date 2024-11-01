@@ -14,10 +14,9 @@ export default class OficinasController {
             const oficinasObtenidas = await this.service.obtenerTodos();
             return res.status(200).json(oficinasObtenidas);
         } catch (error) {
-            const estado = error.statusCode || 500;
-            return res.status(estado).json({ 
-                status: estado, 
-                data: { error: error.message } 
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
             });
         }
     }
@@ -30,10 +29,9 @@ export default class OficinasController {
             const oficinaObtenida = await this.service.obtenerPorId(id);
             return res.status(200).json(oficinaObtenida);
         } catch (error) {
-            const estado = error.statusCode || 500;
-            return res.status(estado).json({ 
-                status: estado, 
-                data: { error: error.message } 
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
             });
         }
     }
@@ -46,10 +44,9 @@ export default class OficinasController {
             const nuevaOficina = await this.service.agregar(datos);
             return res.status(200).json(nuevaOficina);
         } catch (error) {
-            const estado = error.statusCode || 500;
-            return res.status(estado).json({ 
-                status: estado, 
-                data: { error: error.message } 
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
             });
         }
     }
@@ -65,12 +62,14 @@ export default class OficinasController {
             const oficinaModificada = await this.service.modificar(id, datos);
             return res.status(200).json(oficinaModificada);
         } catch (error) {
-            const estado = error.statusCode || 500;
-            return res.status(estado).json({ 
-                status: estado, 
-                data: { error: error.message } 
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
             });
         }
     }
 
+    // agregar empleados
+
+    // quitar empleados
 }

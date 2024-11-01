@@ -16,6 +16,7 @@ import { router as v1UsuariosRouter } from "./v1/routes/usuariosRoutes.js";
 import { router as v1AuthRouter } from "./v1/routes/authRoutes.js";
 import passport from "./middlewares/passport.js";
 
+
 const app = express()
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 

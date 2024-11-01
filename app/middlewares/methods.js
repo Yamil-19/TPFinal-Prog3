@@ -19,8 +19,6 @@ function verificarUsuario(req, res, next) {
     }
 }
 
-
-
 function estaLogueado(req, res, next) {
     const logueado = revisarCookie(req)
     if (!logueado) {

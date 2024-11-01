@@ -16,5 +16,8 @@ export default class AuthController {
         }
     }
 
+    registrar = async () => {
+        
+    }
 }
 

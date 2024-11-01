@@ -1,5 +1,4 @@
 import { conexion } from "./conexion.js";
-import ApiError from "../utils/manejoDeErrores.js";
 
 export default class ReclamosTipos {
     
@@ -7,11 +6,16 @@ export default class ReclamosTipos {
         try {
             const sql = `SELECT * FROM reclamostipo`
             const [resultado] = await conexion.query(sql)
-            return resultado
+
+            return resultado;
         } catch (error) {
-            throw new Error('Error en el servidor');
+            console.error('Error en obtenerTodos:', error);
+            return { 
+                estado: 500, 
+                mensaje: `Error en el servidor ${error}` 
+            };
         }
-    }
+    };
     
     obtenerPorId = async (id) => {
         try {
@@ -19,57 +23,61 @@ export default class ReclamosTipos {
             const [resultado] = await conexion.query(sql, [id]);
 
             if (resultado.length === 0) {
-                throw new ApiError('ID no encontrado', 404);
-            } else {
-                return resultado
+                return null;
             }
+
+            return resultado[0];
         } catch (error) {
-            if (error instanceof ApiError) {
-                throw error
-            } else {
-                throw new ApiError('Error en el servidor', 500)
-            }
+            console.error('Error en obtenerPorId:', error);
+            return { 
+                estado: 500, 
+                mensaje: `Error en el servidor ${error}` 
+            };
         }
-    }
+    };
 
     agregar = async (descripcion) => {
         try {
             const sql = `INSERT INTO reclamostipo (descripcion, activo) VALUES (?,1);`;
             const [resultado] = await conexion.query(sql, [descripcion]);
 
-            if (resultado.affectedRows === 1) {
-                const [nuevoReclamoTipo] = await conexion.query(`SELECT * FROM reclamostipo WHERE idReclamoTipo = ?`, [resultado.insertId]);
-                return nuevoReclamoTipo[0];
-            } else {
-                throw new ApiError('No se pudo agregar el reclamoTipo', 500);
-            }
+            if (resultado.affectedRows === 0) {
+                return { 
+                    estado: 500, 
+                    mensaje: 'No se pudo agregar el reclamoTipo' 
+                };
+            } 
+
+            return await conexion.query('SELECT * FROM reclamostipo WHERE idReclamoTipo = ?', [resultado.insertId]);
         } catch (error) {
-            if (error instanceof ApiError) {
-                throw error
-            } else {
-                throw new ApiError('Error en el servidor', 500)
-            }
+            console.error('Error en agregar:', error);
+            return { 
+                estado: 500, 
+                mensaje: `Error en el servidor ${error}` 
+            };
         }
-    }
+    };
 
     modificar = async (id, descripcion) => {
         try {
             const sql = `UPDATE reclamostipo SET ? WHERE idReclamoTipo = ?`;
             const [resultado] = await conexion.query(sql, [descripcion, id]);
 
-            if (resultado.affectedRows === 1) {
-                const [reclamoTipo] = await conexion.query(`SELECT * FROM reclamostipo WHERE idReclamoTipo = ?`, [id]);
-                return reclamoTipo[0];
-            } else {
-                throw new ApiError('No se pudo modificar el reclamoTipo', 500);
+            if (resultado.affectedRows === 0) {
+                return { 
+                    estado: 500, 
+                    mensaje: 'No se pudo modificar el reclamoTipo' 
+                };
             }
+
+            return await conexion.query('SELECT * FROM reclamostipo WHERE idReclamoTipo = ?', [id]);
         } catch (error) {
-            if (error instanceof ApiError) {
-                throw error
-            } else {
-                throw new ApiError('Error en el servidor', 500)
-            }
+            console.error('Error en modificar:', error);
+            return { 
+                estado: 500, 
+                mensaje: `Error en el servidor ${error}` 
+            };
         }
-    }
+    };
     
 }

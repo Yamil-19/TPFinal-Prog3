@@ -9,22 +9,53 @@ export default class ReclamosTiposService {
     }
 
     obtenerTodos = async () => {
-        return await this.reclamosTipos.obtenerTodos();
-    }
+        const resultado = await this.reclamosTipos.obtenerTodos();
+        if (!resultado || resultado.estado) {
+            throw { 
+                estado: resultado.estado || 500, 
+                mensaje: resultado.mensaje || 'Error en el servidor' 
+            };
+        }
+        return resultado;
+    };
     
     obtenerPorId = async (id) => {
-        return await this.reclamosTipos.obtenerPorId(id);
-    }
-
+        const resultado = await this.reclamosTipos.obtenerPorId(id);
+        if (!resultado) {
+            throw { 
+                estado: 404, 
+                mensaje: 'ID no encontrado' 
+            };
+        } else if (resultado.estado) {
+            throw { 
+                estado: resultado.estado, 
+                mensaje: resultado.mensaje 
+            };
+        }
+        return resultado;
+    };
+    
     agregar = async (descripcion) => {
-        return await this.reclamosTipos.agregar(descripcion);
-    }
-
+        const resultado = await this.reclamosTipos.agregar(descripcion);
+        if (!resultado || resultado.estado) {
+            throw { 
+                estado: resultado.estado || 500, 
+                mensaje: resultado.mensaje || 'No se pudo agregar el reclamoTipo' 
+            };
+        }
+        return resultado;
+    };
+    
     modificar = async (id, descripcion) => {
-        // verificar que el ID exista
-        await this.reclamosTipos.obtenerPorId(id);
-        
-        return await this.reclamosTipos.modificar(id, descripcion);
-    }
+        await this.obtenerPorId(id)
+        const resultado = await this.reclamosTipos.modificar(id, descripcion);
+        if (!resultado || resultado.estado) {
+            throw { 
+                estado: resultado.estado || 500, 
+                mensaje: resultado.mensaje || 'No se pudo modificar el reclamoTipo' 
+            };
+        }
+        return resultado;
+    };
 
 }

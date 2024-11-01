@@ -14,10 +14,9 @@ export default class ReclamosTiposController {
             const tiposObtenidos = await this.service.obtenerTodos()
             return res.status(200).json(tiposObtenidos);
         } catch (error) {
-            const estado = error.statusCode || 500;
-            return res.status(estado).json({ 
-                status: estado, 
-                data: { error: error.message } 
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
             });
         }
     }
@@ -30,10 +29,9 @@ export default class ReclamosTiposController {
             const tipoObtenido = await this.service.obtenerPorId(id);
             return res.status(200).json(tipoObtenido);
         } catch (error) {
-            const estado = error.statusCode || 500;
-            return res.status(estado).json({ 
-                status: estado, 
-                data: { error: error.message } 
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
             });
         }
     }
@@ -46,10 +44,9 @@ export default class ReclamosTiposController {
             const nuevoTipo = await this.service.agregar(descripcion);
             return res.status(200).json(nuevoTipo);
         } catch (error) {
-            const estado = error.statusCode || 500;
-            return res.status(estado).json({ 
-                status: estado, 
-                data: { error: error.message } 
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
             });
         }
     }
@@ -65,10 +62,9 @@ export default class ReclamosTiposController {
             const tipoModificado = await this.service.modificar(id, descripcion);
             return res.status(200).json(tipoModificado);
         } catch (error) {
-            const estado = error.statusCode || 500;
-            return res.status(estado).json({ 
-                status: estado, 
-                data: { error: error.message } 
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
             });
         }
     }

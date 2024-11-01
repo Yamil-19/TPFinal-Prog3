@@ -14,13 +14,12 @@ export default class ReclamosEstadosController {
             const estadosObtenidos = await this.service.obtenerTodos()
             return res.status(200).json(estadosObtenidos);
         } catch (error) {
-            const estado = error.statusCode || 500;
-            return res.status(estado).json({ 
-                status: estado, 
-                data: { error: error.message } 
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
             });
         }
-    }
+    };
     
     obtenerPorId = async (req, res) => {
         try {
@@ -30,10 +29,9 @@ export default class ReclamosEstadosController {
             const estadoObtenido = await this.service.obtenerPorId(id);
             return res.status(200).json(estadoObtenido);
         } catch (error) {
-            const estado = error.statusCode || 500;
-            return res.status(estado).json({ 
-                status: estado, 
-                data: { error: error.message } 
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
             });
         }
     }
@@ -46,10 +44,9 @@ export default class ReclamosEstadosController {
             const nuevoEstado = await this.service.agregar(descripcion);
             return res.status(200).json(nuevoEstado);
         } catch (error) {
-            const estado = error.statusCode || 500;
-            return res.status(estado).json({ 
-                status: estado, 
-                data: { error: error.message } 
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
             });
         }
     }
@@ -65,10 +62,9 @@ export default class ReclamosEstadosController {
             const estadoModificado = await this.service.modificar(id, descripcion);
             return res.status(200).json(estadoModificado);
         } catch (error) {
-            const estado = error.statusCode || 500;
-            return res.status(estado).json({ 
-                status: estado, 
-                data: { error: error.message } 
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
             });
         }
     }

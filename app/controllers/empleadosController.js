@@ -14,10 +14,9 @@ export default class EmpleadosController {
             const empleadosObtenidos = await this.service.obtenerTodos();
             return res.status(200).json(empleadosObtenidos);
         } catch (error) {
-            const estado = error.statusCode || 500;
-            return res.status(estado).json({ 
-                status: estado, 
-                data: { error: error.message } 
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
             });
         }
     }
@@ -30,10 +29,9 @@ export default class EmpleadosController {
             const empleadoObtenido = await this.service.obtenerPorId(id);
             return res.status(200).json(empleadoObtenido);
         } catch (error) {
-            const estado = error.statusCode || 500;
-            return res.status(estado).json({ 
-                status: estado, 
-                data: { error: error.message } 
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
             });
         }
     }
@@ -46,10 +44,9 @@ export default class EmpleadosController {
             const nuevoEmpleado = await this.service.agregar(datos);
             return res.status(200).json(nuevoEmpleado);
         } catch (error) {
-            const estado = error.statusCode || 500;
-            return res.status(estado).json({ 
-                status: estado, 
-                data: { error: error.message } 
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
             });
         }
     }
@@ -65,10 +62,9 @@ export default class EmpleadosController {
             const empleadoModificado = await this.service.modificar(id, datos);
             return res.status(200).json(empleadoModificado);
         } catch (error) {
-            const estado = error.statusCode || 500;
-            return res.status(estado).json({ 
-                status: estado, 
-                data: { error: error.message } 
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
             });
         }
     }

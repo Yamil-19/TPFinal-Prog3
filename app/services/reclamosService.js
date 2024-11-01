@@ -17,23 +17,20 @@ export default class ReclamosService {
         return await this.reclamos.obtenerTodos(idUsuarioTipo, id);
     }
     
-    obtenerPorIdReclamo = async (id) => {
-        return await this.reclamos.obtenerPorIdReclamo(id);
-    }
-
-    obtenerPorIdReclamoEstado = async (id) => {
-        // verificar el idReclamoEstado
-        return await this.reclamos.obtenerPorIdReclamoEstado(id);
-    }
-
-    obtenerPorIdReclamoTipo = async (id) => {
-        // verificar el idReclamoTipo
-        return await this.reclamos.obtenerPorIdReclamoTipo(id);
-    }
-
-    obtenerPorIdUsuarioCreador = async (id) => {
-        // verificar el idUsuario
-        return await this.reclamos.obtenerPorIdUsuarioCreador(id);
+    obtenerPorId = async (id) => {
+        const resultado = await this.reclamos.obtenerPorId(id);
+        if (!resultado) {
+            throw { 
+                estado: 404, 
+                mensaje: 'ID no encontrado' 
+            };
+        } else if (resultado.estado) {
+            throw { 
+                estado: resultado.estado, 
+                mensaje: resultado.mensaje 
+            };
+        }
+        return resultado;
     }
 
     agregar = async (datos) => {
@@ -53,8 +50,15 @@ export default class ReclamosService {
 
     atenderReclamo = async (idReclamo, datos) => {
         // verificar ID del reclamo
+
         // verificar ID del reclamoEstado
         return await this.reclamos.modificar(idReclamo, datos);
     }
 
+    cancelarReclamo = async (idReclamo) =>  {
+        // verificar ID del reclamo
+        await this.obtenerPorId(idReclamo)
+        // verificar ID del reclamoEstado
+        return await this.reclamos.modificar(idReclamo);
+    }
 }

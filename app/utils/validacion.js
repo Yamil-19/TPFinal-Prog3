@@ -1,5 +1,4 @@
 import Joi from "joi"
-import ApiError from "./manejoDeErrores.js"
 
 // Esquemas de validacion
 const esquemas = {
@@ -54,11 +53,17 @@ const esquemas = {
 export function validar(datos, tipo) {
     const esquema = esquemas[tipo];
     if (!esquema) {
-        throw new ApiError('Esquema de validación no encontrado', 500);
+        throw { 
+            estado: 500, 
+            mensaje: 'Esquema de validación no encontrado'
+        };
     }
 
     const { error } = esquema.validate(datos);
     if (error) {
-        throw new ApiError(error.message, 400);
+        throw { 
+            estado: 400, 
+            mensaje: error.message
+        };
     }
 }

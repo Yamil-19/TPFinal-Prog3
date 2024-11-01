@@ -1,6 +1,5 @@
 import bcryptjs from "bcryptjs" 
 import { conexion } from './conexion.js';
-import ApiError from "../utils/manejoDeErrores.js";
 
 export default class Usuarios {
     obtenerTodos = async () => {
@@ -9,7 +8,11 @@ export default class Usuarios {
             const [resultado] = await conexion.query(sql);
             return resultado;
         } catch (error) {
-            throw new Error('Error en el servidor');
+            console.error('Error en obtenerTodos:', error);
+            return { 
+                estado: 500, 
+                mensaje: `Error en el servidor ${error}` 
+            };
         }
     }
     
@@ -19,16 +22,16 @@ export default class Usuarios {
             const [resultado] = await conexion.query(sql, [id]);
 
             if (resultado.length === 0) {
-                throw new ApiError('ID no encontrado', 404);
-            } else {
-                return resultado[0]
+                return null;
             }
+
+            return resultado[0];
         } catch (error) {
-            if (error instanceof ApiError) {
-                throw error
-            } else {
-                throw new ApiError('Error en el servidor', 500)
-            }
+            console.error('Error en obtenerPorId:', error);
+            return { 
+                estado: 500, 
+                mensaje: `Error en el servidor ${error}` 
+            };
         }
     }
 
@@ -37,18 +40,20 @@ export default class Usuarios {
             const sql = `INSERT INTO usuarios (nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, activo) VALUES (?,?,?,?,?,1);`;
             const [resultado] = await conexion.query(sql, [datos.nombre, datos.apellido, datos.correoElectronico, datos.contrasenia, datos.idUsuarioTipo]);
 
-            if (resultado.affectedRows === 1) {
-                const [nuevoUsuario] = await conexion.query(`SELECT * FROM usuarios WHERE idUsuario = ?`, [resultado.insertId]);
-                return nuevoUsuario[0];
-            } else {
-                throw new ApiError('No se pudo agregar el usuario', 500);
-            }
+            if (resultado.affectedRows === 0) {
+                return { 
+                    estado: 500, 
+                    mensaje: 'No se pudo agregar el usuario' 
+                };
+            } 
+
+            return await conexion.query('SELECT * FROM usuarios WHERE idUsuario = ?', [resultado.insertId]);
         } catch (error) {
-            if (error instanceof ApiError) {
-                throw error
-            } else {
-                throw new ApiError('Error en el servidor', 500)
-            }
+            console.error('Error en agregar:', error);
+            return { 
+                estado: 500, 
+                mensaje: `Error en el servidor ${error}` 
+            };
         }
     }
 
@@ -57,41 +62,51 @@ export default class Usuarios {
             const sql = `UPDATE usuarios SET ? WHERE idUsuario = ?`;
             const [resultado] = await conexion.query(sql, [datos, id]);
 
-            if (resultado.affectedRows === 1) {
-                const [usuario] = await conexion.query(`SELECT * FROM usuarios WHERE idUsuario = ?`, [id]);
-                return usuario[0];
-            } else {
-                throw new ApiError('No se pudo modificar el usuario', 500);
+            if (resultado.affectedRows === 0) {
+                return { 
+                    estado: 500, 
+                    mensaje: 'No se pudo modificar el usuario' 
+                };
             }
-        } catch (error) {
-            if (error instanceof ApiError) {
-                throw error
-            } else {
-                throw new ApiError('Error en el servidor', 500)
-            }
-        }
-    }
-    
-    verificarEmail = async (email) => {
-        const sql = `SELECT * FROM usuarios WHERE correoElectronico = ?;`;
-        const [resultado] = await conexion.query(sql, [email]);
-        if (resultado.length === 1) {
-            throw new ApiError(`El email ${email} ya está en uso`, 400);
-        }
-    }
 
+            return await conexion.query('SELECT * FROM usuarios WHERE idUsuario = ?', [id]);
+        } catch (error) {
+            console.error('Error en modificar:', error);
+            return { 
+                estado: 500, 
+                mensaje: `Error en el servidor ${error}` 
+            };
+        }
+    };
+    
     obtenerPorEmail = async (email) => {
-        const sql = `SELECT * FROM usuarios WHERE correoElectronico = ?;`;
-        const [resultado] = await conexion.query(sql, [email]);
-        return resultado[0]
-    }
+        try {
+            const sql = `SELECT * FROM usuarios WHERE correoElectronico = ?;`;
+            const [resultado] = await conexion.query(sql, [email]);
+            return resultado[0]
+        } catch (error) {
+            console.error('Error en modificar:', error);
+            return { 
+                estado: 500, 
+                mensaje: `Error en el servidor ${error}` 
+            };
+        }
+    };
 
     iniciarSesion = async (correoElectronico, contrasenia) => {
-        const sql = `SELECT * FROM usuarios WHERE correoElectronico = ? AND contrasenia = ? AND activo = 1;`;
-        const resultado = await conexion.query(sql, [correoElectronico, contrasenia])
-        console.log(resultado[0])
-        return resultado[0]
-    }
+        try {
+            const sql = `SELECT * FROM usuarios WHERE correoElectronico = ? AND contrasenia = ? AND activo = 1;`;
+            const resultado = await conexion.query(sql, [correoElectronico, contrasenia])
+            console.log(resultado[0])
+            return resultado[0]
+        } catch (error) {
+            console.error('Error en modificar:', error);
+            return { 
+                estado: 500, 
+                mensaje: `Error en el servidor ${error}` 
+            };
+        }
+    };
 
 
 
@@ -133,25 +148,6 @@ export default class Usuarios {
     //         console.log('Error al obtener el ID')
     //         throw new Error("Error al obtener el ID");
             
-    //     }
-    // }
-
-    // obtenerPorIdUsuarioTipo = async (idUsuarioTipo) => {
-    //     try {
-    //         const sql = `SELECT * FROM usuariostipo WHERE idUsuarioTipo = ?;`;
-    //         const [resultado] = await conexion.query(sql, [idUsuarioTipo]);
-
-    //         if (resultado.length === 0) {
-    //             throw new ApiError('ID no encontrado', 404);
-    //         } else {
-    //             return resultado
-    //         }
-    //     } catch (error) {
-    //         if (error instanceof ApiError) {
-    //             throw error
-    //         } else {
-    //             throw new ApiError('Error en el servidor', 500)
-    //         }
     //     }
     // }
 
