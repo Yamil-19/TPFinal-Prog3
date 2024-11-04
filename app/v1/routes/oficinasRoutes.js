@@ -12,6 +12,8 @@ router.post('/', oficinasController.agregar)
 
 router.patch('/:idOficina', oficinasController.modificar)
 
-router.post('/agregar_empleado')
+router.post('/agregar-empleados', oficinasController.agregarEmpleados)
+
+router.post('/quitar-empleados', oficinasController.quitarEmpleados)
 
 export { router }

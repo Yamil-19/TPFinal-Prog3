@@ -10,11 +10,21 @@ export default class ReclamosService {
         this.usuarios = new UsuariosService()
     }
 
-    obtenerTodos = async () => {
-        const idUsuarioTipo = 1
-        const id = 8
-        await this.usuarios.obtenerPorIdUsuarioTipo(idUsuarioTipo);
-        return await this.reclamos.obtenerTodos(idUsuarioTipo, id);
+    obtenerTodos = async (idUsuarioTipo, idUsuario) => {
+        let id = idUsuario
+        if (idUsuarioTipo === 2) {
+            id = await this.reclamos.obtenerIdReclamoTipo(idUsuario);
+        }
+        
+        const resultado = await this.reclamos.obtenerTodos(idUsuarioTipo, id);
+        if (!resultado) {
+            throw { 
+                estado: 400, 
+                mensaje: 'no se wacho, algo anda mal' 
+            };
+        }
+
+        return resultado
     }
     
     obtenerPorId = async (id) => {
@@ -58,6 +68,7 @@ export default class ReclamosService {
     cancelarReclamo = async (idReclamo) =>  {
         // verificar ID del reclamo
         await this.obtenerPorId(idReclamo)
+
         // verificar ID del reclamoEstado
         return await this.reclamos.modificar(idReclamo);
     }

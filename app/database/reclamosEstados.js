@@ -4,7 +4,7 @@ export default class ReclamosEstados {
     
     obtenerTodos = async () => {
         try {
-            const sql = 'SELECT * FROM reclamosestado';
+            const sql = 'SELECT * FROM reclamos_estado';
             const [resultado] = await conexion.query(sql);
 
             return resultado;
@@ -19,7 +19,7 @@ export default class ReclamosEstados {
     
     obtenerPorId = async (id) => {
         try {
-            const sql = 'SELECT * FROM reclamosestado WHERE idReclamoEstado = ?';
+            const sql = 'SELECT * FROM reclamos_estado WHERE idReclamoEstado = ?';
             const [resultado] = await conexion.query(sql, [id]);
 
             if (resultado.length === 0) {
@@ -38,7 +38,7 @@ export default class ReclamosEstados {
     
     agregar = async (descripcion) => {
         try {
-            const sql = 'INSERT INTO reclamosestado (descripcion, activo) VALUES (?,1)';
+            const sql = 'INSERT INTO reclamos_estado (descripcion, activo) VALUES (?,1)';
             const [resultado] = await conexion.query(sql, [descripcion]);
 
             if (resultado.affectedRows === 0) {
@@ -48,7 +48,7 @@ export default class ReclamosEstados {
                 };
             } 
 
-            return await conexion.query('SELECT * FROM reclamosestado WHERE idReclamoEstado = ?', [resultado.insertId]);
+            return await conexion.query('SELECT * FROM reclamos_estado WHERE idReclamoEstado = ?', [resultado.insertId]);
         } catch (error) {
             console.error('Error en agregar:', error);
             return { 
@@ -60,7 +60,7 @@ export default class ReclamosEstados {
     
     modificar = async (id, descripcion) => {
         try {
-            const sql = 'UPDATE reclamosestado SET descripcion = ? WHERE idReclamoEstado = ?';
+            const sql = 'UPDATE reclamos_estado SET descripcion = ? WHERE idReclamoEstado = ?';
             const [resultado] = await conexion.query(sql, [descripcion, id]);
 
             if (resultado.affectedRows === 0) {
@@ -70,7 +70,7 @@ export default class ReclamosEstados {
                 };
             }
 
-            return await conexion.query('SELECT * FROM reclamosestado WHERE idReclamoEstado = ?', [id]);
+            return await conexion.query('SELECT * FROM reclamos_estado WHERE idReclamoEstado = ?', [id]);
         } catch (error) {
             console.error('Error en modificar:', error);
             return { 

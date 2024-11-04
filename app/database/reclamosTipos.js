@@ -4,7 +4,7 @@ export default class ReclamosTipos {
     
     obtenerTodos = async () => {
         try {
-            const sql = `SELECT * FROM reclamostipo`
+            const sql = `SELECT * FROM reclamos_tipo`
             const [resultado] = await conexion.query(sql)
 
             return resultado;
@@ -19,7 +19,7 @@ export default class ReclamosTipos {
     
     obtenerPorId = async (id) => {
         try {
-            const sql = `SELECT * FROM reclamostipo WHERE idReclamoTipo = ?;`;
+            const sql = `SELECT * FROM reclamos_tipo WHERE idReclamoTipo = ?;`;
             const [resultado] = await conexion.query(sql, [id]);
 
             if (resultado.length === 0) {
@@ -38,7 +38,7 @@ export default class ReclamosTipos {
 
     agregar = async (descripcion) => {
         try {
-            const sql = `INSERT INTO reclamostipo (descripcion, activo) VALUES (?,1);`;
+            const sql = `INSERT INTO reclamos_tipo (descripcion, activo) VALUES (?,1);`;
             const [resultado] = await conexion.query(sql, [descripcion]);
 
             if (resultado.affectedRows === 0) {
@@ -48,7 +48,7 @@ export default class ReclamosTipos {
                 };
             } 
 
-            return await conexion.query('SELECT * FROM reclamostipo WHERE idReclamoTipo = ?', [resultado.insertId]);
+            return await conexion.query('SELECT * FROM reclamos_tipo WHERE idReclamoTipo = ?', [resultado.insertId]);
         } catch (error) {
             console.error('Error en agregar:', error);
             return { 
@@ -60,7 +60,7 @@ export default class ReclamosTipos {
 
     modificar = async (id, descripcion) => {
         try {
-            const sql = `UPDATE reclamostipo SET ? WHERE idReclamoTipo = ?`;
+            const sql = `UPDATE reclamos_tipo SET ? WHERE idReclamoTipo = ?`;
             const [resultado] = await conexion.query(sql, [descripcion, id]);
 
             if (resultado.affectedRows === 0) {
@@ -70,7 +70,7 @@ export default class ReclamosTipos {
                 };
             }
 
-            return await conexion.query('SELECT * FROM reclamostipo WHERE idReclamoTipo = ?', [id]);
+            return await conexion.query('SELECT * FROM reclamos_tipo WHERE idReclamoTipo = ?', [id]);
         } catch (error) {
             console.error('Error en modificar:', error);
             return { 

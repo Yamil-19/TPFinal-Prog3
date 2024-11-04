@@ -18,7 +18,7 @@ export default class Usuarios {
     
     obtenerPorId = async (id) => {
         try {
-            const sql = `SELECT * FROM usuarios WHERE idUsuario = ?;`;
+            const sql = `SELECT u.idUsuario, CONCAT(u.nombre, ' ', u.apellido) as usuario, u.idUsuarioTipo FROM usuarios AS u WHERE u.idUsuario = ?;`;
             const [resultado] = await conexion.query(sql, [id]);
 
             if (resultado.length === 0) {
@@ -83,9 +83,14 @@ export default class Usuarios {
         try {
             const sql = `SELECT * FROM usuarios WHERE correoElectronico = ?;`;
             const [resultado] = await conexion.query(sql, [email]);
-            return resultado[0]
+
+            if (resultado.length === 0) {
+                return null;
+            }
+
+            return resultado[0];
         } catch (error) {
-            console.error('Error en modificar:', error);
+            console.error('Error en obtenerPorEmail:', error);
             return { 
                 estado: 500, 
                 mensaje: `Error en el servidor ${error}` 
@@ -97,10 +102,10 @@ export default class Usuarios {
         try {
             const sql = `SELECT * FROM usuarios WHERE correoElectronico = ? AND contrasenia = ? AND activo = 1;`;
             const resultado = await conexion.query(sql, [correoElectronico, contrasenia])
-            console.log(resultado[0])
+            console.log(resultado[0]) // debug 
             return resultado[0]
         } catch (error) {
-            console.error('Error en modificar:', error);
+            console.error('Error en iniciarSesion:', error);
             return { 
                 estado: 500, 
                 mensaje: `Error en el servidor ${error}` 

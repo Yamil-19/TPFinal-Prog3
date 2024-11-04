@@ -10,14 +10,17 @@ export default class AuthController {
             const { correoElectronico, contrasenia } = req.body
         
             const resultado = await this.service.iniciarSesion(correoElectronico, contrasenia)
+            const cookieOption = {
+                path: '/',
+            }
+            res.cookie('jwt', resultado, cookieOption)
             return res.status(200).json(resultado)
         } catch (error) {
-            return res.status(500).json({error: error})
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
+            });
         }
-    }
-
-    registrar = async () => {
-        
     }
 }
 

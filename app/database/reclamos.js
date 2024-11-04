@@ -24,6 +24,25 @@ export default class Reclamos {
         }
     };
     
+    obtenerIdReclamoTipo = async (idUsuario) => {
+        try {
+            const sql = `SELECT o.idReclamoTipo FROM oficinas AS o INNER JOIN usuarios_oficinas AS uo 
+                        ON o.idOficina = uo.idOficina WHERE uo.idUsuario = ?;`;
+            const [resultado] = await conexion.query(sql, [idUsuario])
+
+            if (resultado.length === 0) {
+                return null
+            }
+            return resultado[0].idReclamoTipo
+        } catch (error) {
+            console.error('Error en obtenerIdReclamoTipo:', error);
+            return { 
+                estado: 500, 
+                mensaje: `Error en el servidor ${error}` 
+            };
+        }
+    }
+
     obtenerPorId = async (id) => {
         try {
             const sql = `SELECT * FROM reclamos WHERE idReclamo = ?;`;
@@ -55,7 +74,8 @@ export default class Reclamos {
                 };
             } 
 
-            return await conexion.query('SELECT * FROM reclamos WHERE idReclamo = ?', [resultado.insertId]);
+            const [nuevoReclamo] = await conexion.query('SELECT * FROM reclamos WHERE idReclamo = ?', [resultado.insertId]);
+            return nuevoReclamo[0]
         } catch (error) {
             console.error('Error en agregar:', error);
             return { 

@@ -1,12 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import passport from "./middlewares/passport.js";
 
 import path from 'path';
 import { fileURLToPath } from "url";
 
 import { router as v1AppWebRouter } from "./v1/routes/appWeb.js";
-import { router as v1ClientesRouter } from "./v1/routes/clientesRoutes.js";
 import { router as v1EmpleadosRouter } from "./v1/routes/empleadosRoutes.js";
 import { router as v1OficinasRouter } from "./v1/routes/oficinasRoutes.js";
 import { router as v1ReclamosEstadosRouter } from "./v1/routes/reclamosEstadosRoutes.js";
@@ -14,8 +14,6 @@ import { router as v1ReclamosRouter } from "./v1/routes/reclamosRoutes.js";
 import { router as v1ReclamosTiposRouter } from "./v1/routes/reclamosTiposRoutes.js";
 import { router as v1UsuariosRouter } from "./v1/routes/usuariosRoutes.js";
 import { router as v1AuthRouter } from "./v1/routes/authRoutes.js";
-import passport from "./middlewares/passport.js";
-
 
 const app = express()
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -34,9 +32,6 @@ app.get('/perfil', passport.authenticate("jwt", { session: false }), (req, res) 
 });
 
 app.use('/', v1AppWebRouter)
-
-app.use('/api/clientes', v1ClientesRouter)
-app.use('/api/v1/clientes', v1ClientesRouter)
 
 app.use('/api/empleados', v1EmpleadosRouter)
 app.use('/api/v1/empleados', v1EmpleadosRouter)

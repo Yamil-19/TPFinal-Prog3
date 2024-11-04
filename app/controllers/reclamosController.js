@@ -1,6 +1,7 @@
 import ReclamosService from "../services/reclamosService.js";
-import { validar } from "../utils/validacion.js"
+import validar from "../utils/validacion.js"
 import dotenv from 'dotenv';
+
 
 dotenv.config()
 
@@ -10,8 +11,10 @@ export default class ReclamosController {
     }
 
     obtenerTodos = async (req, res) => {
+        const { idUsuario, idUsuarioTipo } = req.user
+
         try {
-            const reclamosObtenidos = await this.service.obtenerTodos();
+            const reclamosObtenidos = await this.service.obtenerTodos(idUsuarioTipo, idUsuario);
             return res.status(200).json(reclamosObtenidos);
         } catch (error) {
             return res.status(error.estado || 500).json({ 

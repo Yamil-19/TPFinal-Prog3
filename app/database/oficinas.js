@@ -80,7 +80,4 @@ export default class Oficinas {
         }
     };
     
-    // agregar empleados
-
-    // quitar empleados
 }
