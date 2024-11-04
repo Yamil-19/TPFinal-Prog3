@@ -94,9 +94,22 @@ export default class Oficinas {
             };
         }
     }
+
+    // obtenerUsuarioPorId = async (idUsuario) => {
+    //     const sql = `SELECT idUsuarioOficina FROM usuariosoficinas WHERE idUsuario = ?`
+    //     const [resultado] = await conexion.query(sql, [idUsuario])
+    //     return resultado
+    // }
     
+    // cambiarDeOficina = async (idUsuario) => {
+    //     const sql = `UPDATE usuariosOficinas SET idOficina = ? WHERE idUsuarioOficina = ?`
+    //     const [resultado] = await conexion.query(sql, [idUsuario])
+    //     return resultado
+    // }
+
+
+
     activo = async (valor, idUsuario) => {
-        console.log(valor, idUsuario)
         const [resultado] = await conexion.query(`UPDATE usuariosOficinas SET activo = ? WHERE idUsuario = ?`, [valor, idUsuario]);
         if (resultado.affectedRows === 0) {
             return { 
@@ -106,6 +119,8 @@ export default class Oficinas {
         }
         return resultado
     }
+    
+
     agregarUsuarioOficina = async (usuario, idOficina) => {
         try {
             await conexion.query(`INSERT INTO usuariosOficinas (idUsuario, idOficina) VALUES (?, ?)`, [usuario, idOficina]);

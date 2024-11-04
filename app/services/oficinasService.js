@@ -75,15 +75,21 @@ export default class OficinasService {
         for (const e of listaEmpleados) {
             if (!usuarios.includes(e.idUsuario)) {
                 const usuarioDesactivado = await this.oficinas.activo(0, e.idUsuario)
-                console.log('Desactivo:', usuarioDesactivado)
+                // console.log('Desactivo:', usuarioDesactivado)
             }
         }
         for (const u of usuarios) {
+            // const usuariosOficinas = await this.oficinas.obtenerUsuarioPorId(u)
+            // if (usuariosOficinas) {
+            //     for (const uo of usuariosOficinas) {
+            //         const oficina = a
+            //     }
+            // }
             const empleado = listaEmpleados.find(e => e.idUsuario === u);
             if (empleado){
                 if(empleado.activo === 0) {
                     const usuarioActivado = await this.oficinas.activo(1, empleado.idUsuario)
-                    console.log('Desactivo:', usuarioActivado)
+                    // console.log('Desactivo:', usuarioActivado)
                 }
             } else {
                 const resultado = await this.oficinas.agregarUsuarioOficina(u, idOficina);

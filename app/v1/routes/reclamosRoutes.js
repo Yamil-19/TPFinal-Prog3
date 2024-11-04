@@ -11,6 +11,8 @@ router.get('/', reclamosController.obtenerTodos)
 // router.get('/tipo/:idReclamoTipo', reclamosController.obtenerPorIdReclamoTipo)
 // router.get('/creador/:idUsuarioCreador', reclamosController.obtenerPorIdUsuarioCreador)
 
+router.get('/informe', reclamosController.informe)
+
 router.post('/', reclamosController.agregar)
 
 router.patch('/:idReclamo', reclamosController.modificar)
