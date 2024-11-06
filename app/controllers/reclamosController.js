@@ -109,7 +109,6 @@ export default class ReclamosController {
                     mensaje: "Formato inválido para el informe."    
                 })
             }
-            
             // generar informe
             const {buffer, path, headers} = await this.service.generarInforme(formato);
 

@@ -41,23 +41,18 @@ export default class InformeService {
             const template = handlebars.compile(htmlTemplate);
             const htmlFinal = template(datosReporte);
 
-            // lanzo puppeteer, 
             const browser = await puppeteer.launch();
 
-            // abrir un pagina
             const page = await browser.newPage();
 
-            // cargo la plantilla 
             await page.setContent(htmlFinal, {waitUntil: 'load'});
 
-            // genero pdf
             const pdfBuffer = await page.pdf({
                 format:'A4',
                 printBackground: true,
-                margin: {top: '10px', bottom: '10px' }
+                margin: {top: '10px', bottom: '10px', left: '50px', right: '50px' }
             });
 
-            // 
             await browser.close();
 
             return pdfBuffer;

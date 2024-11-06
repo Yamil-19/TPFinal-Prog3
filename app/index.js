@@ -2,8 +2,6 @@ import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import passport from "./middlewares/passport.js";
-import swaggerJSDoc from "swagger-jsdoc";
-import swaggerUi from "swagger-ui-express"
 
 import path from 'path';
 import { fileURLToPath } from "url";
@@ -30,41 +28,6 @@ app.use(cookieParser())
 app.use(express.static(__dirname + '/public'))
 
 app.use(passport.initialize())
-
-const swaggerOptions = {
-    definition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'API REST - Programación 3 - 2024',
-            version: '1.0.0',
-            description: 'API REST para la gestión de reclamos de la concesionaria de automóviles Prog.III. '
-        },
-        components: {
-            securitySchemes: {
-              bearerAuth: {
-                type: 'http',
-                scheme: 'bearer',
-                bearerFormat: 'JWT',
-              },
-            },
-        },
-        security: [
-            {
-              bearerAuth: [],
-            },
-        ],
-        servers: [
-            {
-                url: 'http://localhost:3000',
-            },
-        ],
-    },
-    apis: ['app/v1/routes/*.js'], 
-};
-
-const swaggerDocs = swaggerJSDoc(swaggerOptions)
-
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
 app.use('/auth', v1AuthRouter)
 
