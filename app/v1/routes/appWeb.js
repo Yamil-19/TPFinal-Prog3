@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 router.get('/register', (req, res) => {
     res.status(200).send(register)
 })
-router.get('/cliente', passport.authenticate("jwt", { session: false }), autorizarUsuarios([3]), (req, res) => {
+router.get('/cliente', (req, res) => {
     res.status(200).send(cliente)
 })
 router.get('/empleado', passport.authenticate("jwt", { session: false }), autorizarUsuarios([2]), (req, res) => {

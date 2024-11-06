@@ -14,7 +14,8 @@ export default class AuthController {
                 path: '/'
             }
             res.cookie('jwt', resultado, cookieOption)
-            return res.status(200).json(resultado)
+            // return res.status(200).json(resultado)
+            res.status(201).send({ status: "OK", data: resultado, redirect: '/cliente'});
         } catch (error) {
             return res.status(error.estado || 500).json({ 
                 estado: error.estado || 500, 

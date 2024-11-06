@@ -19,8 +19,8 @@ export default class ReclamosTiposService {
         return resultado;
     };
     
-    obtenerPorId = async (id) => {
-        const resultado = await this.reclamosTipos.obtenerPorId(id);
+    obtenerPorId = async (idReclamoTipo) => {
+        const resultado = await this.reclamosTipos.obtenerPorId(idReclamoTipo);
         if (!resultado) {
             throw { 
                 estado: 404, 
@@ -35,8 +35,8 @@ export default class ReclamosTiposService {
         return resultado;
     };
     
-    agregar = async (descripcion) => {
-        const resultado = await this.reclamosTipos.agregar(descripcion);
+    agregar = async (datos) => {
+        const resultado = await this.reclamosTipos.agregar(datos);
         if (!resultado || resultado.estado) {
             throw { 
                 estado: resultado.estado || 500, 
@@ -46,9 +46,9 @@ export default class ReclamosTiposService {
         return resultado;
     };
     
-    modificar = async (id, descripcion) => {
-        await this.obtenerPorId(id)
-        const resultado = await this.reclamosTipos.modificar(id, descripcion);
+    modificar = async (idReclamoTipo, datos) => {
+        await this.obtenerPorId(idReclamoTipo)
+        const resultado = await this.reclamosTipos.modificar(idReclamoTipo, datos);
         if (!resultado || resultado.estado) {
             throw { 
                 estado: resultado.estado || 500, 

@@ -16,8 +16,8 @@ export default class ReclamosEstadosService {
         return resultado;
     };
     
-    obtenerPorId = async (id) => {
-        const resultado = await this.reclamosEstados.obtenerPorId(id);
+    obtenerPorId = async (idReclamoEstado) => {
+        const resultado = await this.reclamosEstados.obtenerPorId(idReclamoEstado);
         if (!resultado) {
             throw { 
                 estado: 404, 
@@ -32,8 +32,8 @@ export default class ReclamosEstadosService {
         return resultado;
     };
     
-    agregar = async (descripcion) => {
-        const resultado = await this.reclamosEstados.agregar(descripcion);
+    agregar = async (datos) => {
+        const resultado = await this.reclamosEstados.agregar(datos);
         if (!resultado || resultado.estado) {
             throw { 
                 estado: resultado.estado || 500, 
@@ -43,9 +43,9 @@ export default class ReclamosEstadosService {
         return resultado;
     };
     
-    modificar = async (id, descripcion) => {
-        await this.obtenerPorId(id)
-        const resultado = await this.reclamosEstados.modificar(id, descripcion);
+    modificar = async (idReclamoEstado, datos) => {
+        await this.obtenerPorId(idReclamoEstado)
+        const resultado = await this.reclamosEstados.modificar(idReclamoEstado, datos);
         if (!resultado || resultado.estado) {
             throw { 
                 estado: resultado.estado || 500, 

@@ -4,7 +4,7 @@ export default class ReclamosEstados {
     
     obtenerTodos = async () => {
         try {
-            const sql = 'SELECT * FROM reclamos_estado';
+            const sql = 'SELECT idReclamoEstado, descripcion FROM reclamos_estado';
             const [resultado] = await conexion.query(sql);
 
             return resultado;
@@ -17,10 +17,10 @@ export default class ReclamosEstados {
         }
     };
     
-    obtenerPorId = async (id) => {
+    obtenerPorId = async (idReclamoEstado) => {
         try {
             const sql = 'SELECT descripcion FROM reclamos_estado WHERE idReclamoEstado = ?';
-            const [resultado] = await conexion.query(sql, [id]);
+            const [resultado] = await conexion.query(sql, [idReclamoEstado]);
 
             if (resultado.length === 0) {
                 return null;
@@ -36,10 +36,10 @@ export default class ReclamosEstados {
         }
     };
     
-    agregar = async (descripcion) => {
+    agregar = async (datos) => {
         try {
             const sql = 'INSERT INTO reclamos_estado (descripcion, activo) VALUES (?,1)';
-            const [resultado] = await conexion.query(sql, [descripcion]);
+            const [resultado] = await conexion.query(sql, [datos.descripcion]);
 
             if (resultado.affectedRows === 0) {
                 return { 
@@ -48,7 +48,7 @@ export default class ReclamosEstados {
                 };
             } 
 
-            return await conexion.query('SELECT * FROM reclamos_estado WHERE idReclamoEstado = ?', [resultado.insertId]);
+            return `Se agregó correctamente el reclamoEstado: ${resultado.insertId}`
         } catch (error) {
             console.error('Error en agregar:', error);
             return { 
@@ -58,10 +58,10 @@ export default class ReclamosEstados {
         }
     };
     
-    modificar = async (id, descripcion) => {
+    modificar = async (idReclamoEstado, datos) => {
         try {
-            const sql = 'UPDATE reclamos_estado SET descripcion = ? WHERE idReclamoEstado = ?';
-            const [resultado] = await conexion.query(sql, [descripcion, id]);
+            const sql = 'UPDATE reclamos_estado SET ? WHERE idReclamoEstado = ?';
+            const [resultado] = await conexion.query(sql, [datos, idReclamoEstado]);
 
             if (resultado.affectedRows === 0) {
                 return { 
@@ -70,7 +70,7 @@ export default class ReclamosEstados {
                 };
             }
 
-            return await conexion.query('SELECT * FROM reclamos_estado WHERE idReclamoEstado = ?', [id]);
+            return `Se modificó correctamente el reclamoEstado: ${idReclamoEstado}`
         } catch (error) {
             console.error('Error en modificar:', error);
             return { 

@@ -38,10 +38,10 @@ export default class ReclamosEstadosController {
 
     agregar = async (req, res) => {
         try {
-            const descripcion = req.body;
-            validar(descripcion, 'descripcion');
+            const datos = req.body;
+            validar(datos.descripcion, 'descripcion');
             
-            const nuevoEstado = await this.service.agregar(descripcion);
+            const nuevoEstado = await this.service.agregar(datos);
             return res.status(200).json(nuevoEstado);
         } catch (error) {
             return res.status(error.estado || 500).json({ 
@@ -56,10 +56,10 @@ export default class ReclamosEstadosController {
             const id = req.params.idReclamoEstado;
             validar(id, 'id');
 
-            const descripcion = req.body;
-            validar(descripcion, 'descripcion');
+            const datos = req.body;
+            validar(datos.descripcion, 'descripcion');
             
-            const estadoModificado = await this.service.modificar(id, descripcion);
+            const estadoModificado = await this.service.modificar(id, datos);
             return res.status(200).json(estadoModificado);
         } catch (error) {
             return res.status(error.estado || 500).json({ 

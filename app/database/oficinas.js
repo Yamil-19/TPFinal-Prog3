@@ -17,10 +17,10 @@ export default class Oficinas {
         }
     };
     
-    obtenerPorId = async (id) => {
+    obtenerPorId = async (idOficina) => {
         try {
             const sql = `SELECT o.idOficina, o.nombre, rt.descripcion FROM oficinas AS o INNER JOIN reclamos_tipo AS rt ON rt.idReclamoTipo = o.idReclamoTipo WHERE o.idOficina = ?;`;
-            const [resultado] = await conexion.query(sql, [id]);
+            const [resultado] = await conexion.query(sql, [idOficina]);
 
             if (resultado.length === 0) {
                 return null;
@@ -48,7 +48,7 @@ export default class Oficinas {
                 };
             } 
 
-            return await conexion.query('SELECT * FROM oficinas WHERE idOficina = ?', [resultado.insertId]);
+            return `Se agregó correctamente la oficina: ${resultado.insertId}`
         } catch (error) {
             console.error('Error en agregar:', error);
             return { 
@@ -58,10 +58,10 @@ export default class Oficinas {
         }
     };
 
-    modificar = async (id, datos) => {
+    modificar = async (idOficina, datos) => {
         try {
             const sql = `UPDATE oficinas SET ? WHERE idOficina = ?`;
-            const [resultado] = await conexion.query(sql, [datos, id]);
+            const [resultado] = await conexion.query(sql, [datos, idOficina]);
 
             if (resultado.affectedRows === 0) {
                 return { 
@@ -70,7 +70,7 @@ export default class Oficinas {
                 };
             }
 
-            return await conexion.query('SELECT * FROM oficinas WHERE idOficina = ?', [id]);
+            return `Se modificó correctamente la oficina: ${idOficina}`
         } catch (error) {
             console.error('Error en modificar:', error);
             return { 

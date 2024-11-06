@@ -56,16 +56,16 @@ export default class OficinasService {
         return resultado;
     };
     
-    modificar = async (id, datos) => {
+    modificar = async (idOficina, datos) => {
         // Verificar que el ID pasado por parametros exista
-        await this.obtenerPorId(id);
+        await this.obtenerPorId(idOficina);
 
         // Verificar el ID de reclamoTipo
         if (datos.idReclamoTipo) {
             await this.reclamosTipos.obtenerPorId(datos.idReclamoTipo);
         }
 
-        const resultado = await this.oficinas.modificar(id, datos);
+        const resultado = await this.oficinas.modificar(idOficina, datos);
         if (!resultado || resultado.estado) {
             throw { 
                 estado: resultado.estado || 500, 
@@ -76,25 +76,25 @@ export default class OficinasService {
     };
 
     agregarEmpleados = async (idOficina, listaIdEmpleados) => {
-        const listaEmpleadosAgregar = []
-        const listaEmpleadosModificar = []
+        const listaEmpleadosAgregar = [];
+        const listaEmpleadosModificar = [];
 
         // verificar idOficina
         await this.obtenerPorId(idOficina);
 
         // verificar el id de los empleados
-        for (const id of listaIdEmpleados) {
-            await this.usuarios.obtenerPorId(id)
-        }
+        for (const idEmpleado of listaIdEmpleados) {
+            await this.usuarios.obtenerPorId(idEmpleado)
+        };
         
         for (const idEmpleado of listaIdEmpleados) {
-            const estaEnUO = await this.usuariosOficinas.obtenerPorIdUsuario(idEmpleado)
-            if (!estaEnUO) {
+            const estaEnUsuariosOficinas = await this.usuariosOficinas.obtenerPorIdUsuario(idEmpleado);
+            if (!estaEnUsuariosOficinas) {
                 listaEmpleadosAgregar.push(idEmpleado)
             } else {
                 listaEmpleadosModificar.push(idEmpleado)
-            }
-        }
+            };
+        };
 
         const resultado = await this.usuariosOficinas.agregarEmpleados(listaEmpleadosAgregar, listaEmpleadosModificar, idOficina)
         if (!resultado || resultado.estado) {
@@ -102,10 +102,9 @@ export default class OficinasService {
                 estado: resultado.estado || 500, 
                 mensaje: resultado.mensaje || 'No se pudo agregar los empleados' 
             };
-        }
+        };
         return resultado;
-
-    }
+    };
 
     quitarEmpleados = async (idOficina, listaIdEmpleados) =>{
         const errores = [];
