@@ -15,16 +15,20 @@ import { router as v1ReclamosTiposRouter } from "./v1/routes/reclamosTiposRoutes
 import { router as v1UsuariosRouter } from "./v1/routes/usuariosRoutes.js";
 import { router as v1AuthRouter } from "./v1/routes/authRoutes.js";
 
+
+
 const app = express()
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 dotenv.config();
+const puerto = process.env.PUERTO || 3000
 
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.static(__dirname + '/public'))
 
 app.use(passport.initialize())
+
 app.use('/auth', v1AuthRouter)
 
 app.use('/', v1AppWebRouter)
@@ -47,7 +51,6 @@ app.use('/api/v1/reclamosTipos', v1ReclamosTiposRouter)
 app.use('/api', v1UsuariosRouter)
 app.use('/v1/api', v1UsuariosRouter)
 
-const puerto = process.env.PUERTO || 3000
 
 app.listen(puerto, () => {
     console.log(`servidor corriendo en http://localhost:${puerto}`)

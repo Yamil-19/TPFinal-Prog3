@@ -111,37 +111,37 @@ export default class UsuariosService {
     //     return this.clientes.obtenerReclamo(idUsuario)
     // }
     
-    // cancelarReclamo = (idReclamoEstado, correoElectronico, nom) => { 
-    //     const plantilla = email
-    //     const template = handlebars.compile(plantilla)
-    //     const datos = {
-    //         nombre: nom,
-    //         reclamo: 'Cancelado'
-    //     }
-    //     const correoHtml = template(datos)
-    //     const transportador = nodemailer.createTransport({
-    //         service: 'gmail',
-    //         auth: {
-    //             user: process.env.CORREO,
-    //             pass: process.env.CLAVE
-    //         }
-    //     })
+    cancelarReclamo = (idReclamoEstado, correoElectronico, nom) => { 
+        const plantilla = email
+        const template = handlebars.compile(plantilla)
+        const datos = {
+            nombre: nom,
+            reclamo: 'Cancelado'
+        }
+        const correoHtml = template(datos)
+        const transportador = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.CORREO,
+                pass: process.env.CLAVE
+            }
+        })
 
-    //     const mailOptions = {
-    //         to: correoElectronico,
-    //         subject: 'NOTIFICACION',
-    //         html: correoHtml
-    //     }
+        const mailOptions = {
+            to: correoElectronico,
+            subject: 'NOTIFICACION',
+            html: correoHtml
+        }
 
-    //     transportador.sendMail(mailOptions, (error, info) => {
-    //         if (error) {
-    //             console.error('Error sending email: ', error)
-    //         } else {
-    //             console.log('Email sent: ', info.response)
-    //         }
-    //     })
-    //     return this.clientes.cancelarReclamo(idReclamoEstado)
-    // }
+        transportador.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Error sending email: ', error)
+            } else {
+                console.log('Email sent: ', info.response)
+            }
+        })
+        return this.clientes.cancelarReclamo(idReclamoEstado)
+    }
 
     // obtenerReclamosTipo = () => {
     //     return this.administradores.obtenerReclamosTipo()
