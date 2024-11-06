@@ -16,8 +16,7 @@ import { router as v1ReclamosRouter } from "./v1/routes/reclamosRoutes.js";
 import { router as v1ReclamosTiposRouter } from "./v1/routes/reclamosTiposRoutes.js";
 import { router as v1UsuariosRouter } from "./v1/routes/usuariosRoutes.js";
 import { router as v1AuthRouter } from "./v1/routes/authRoutes.js";
-import { title } from "process";
-import { version } from "os";
+
 
 
 const app = express()
@@ -36,18 +35,32 @@ const swaggerOptions = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'API REST -Programacion 3 - 2024',
+            title: 'API REST - Programación 3 - 2024',
             version: '1.0.0',
-            description: 'API REST para la gestion de reclamos de la concesionaria de automoviles PROG.III'
+            description: 'API REST para la gestión de reclamos de la concesionaria de automóviles Prog.III. '
         },
-        server: [
-            {
-                url: `http://localhost:${puerto}`
+        components: {
+            securitySchemes: {
+              bearerAuth: {
+                type: 'http',
+                scheme: 'bearer',
+                bearerFormat: 'JWT',
+              },
             },
-        ]
+        },
+        security: [
+            {
+              bearerAuth: [],
+            },
+        ],
+        servers: [
+            {
+                url: 'http://localhost:3000',
+            },
+        ],
     },
-    apis: ['./v1/routes/*.js']
-}
+    apis: ['app/v1/routes/*.js'], 
+};
 
 const swaggerDocs = swaggerJSDoc(swaggerOptions)
 

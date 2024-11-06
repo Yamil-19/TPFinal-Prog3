@@ -5,47 +5,6 @@ import { autorizarUsuarios } from '../../middlewares/methods.js'
 
 const reclamosController = new ReclamosController()
 const router = express.Router()
-/**
- * @swagger
- * components:
- *   schemas:
- *     Reclamo:
- *       type: object
- *       properties:
- *         idReclamo:
- *           type: integer
- *           description: ID del reclamo
- *         asunto:
- *           type: string
- *           description: Asunto del reclamo
- *         descripcion:
- *           type: string
- *           description: descripcion del reclamo
- *         fechaCreado:
- *           type: string
- *           format: date-time
- *           description: fecha hora de creaciópn del reclamo. 
- *         fechaFinalizado:
- *           type: string
- *           format: date-time
- *           description: fecha hora de finalización del reclamo. 
- *         fechaCancelado:
- *           type: string
- *           format: date-time
- *           description: fecha hora de cancelación del reclamo. 
- *         idReclamoEstado:
- *           type: number
- *           description: ID del estado del reclamo
- *         idReclamoTipo:
- *           type: number
- *           description: ID del tipo del reclamo
- *         idUsuarioCreador:
- *           type: number
- *           description: ID del usuario creador del reclamo
- *         idUsuarioFinalizador:
- *           type: number
- *           description: ID del usuario finalizador del reclamo
- */
 
 /**
  * @swagger
@@ -62,10 +21,8 @@ const router = express.Router()
  *            application/json:
  *             schema: 
  *              type: array
- *              items:
- *               $ref: '#/components/schemas/Reclamo'
+ *          
  */
-
 router.get('/', passport.authenticate("jwt", { session: false }), reclamosController.obtenerTodos)
 
 router.get('/:idReclamo', passport.authenticate("jwt", { session: false }), reclamosController.obtenerPorId)
