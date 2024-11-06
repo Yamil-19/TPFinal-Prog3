@@ -19,7 +19,7 @@ export default class ReclamosEstados {
     
     obtenerPorId = async (id) => {
         try {
-            const sql = 'SELECT * FROM reclamos_estado WHERE idReclamoEstado = ?';
+            const sql = 'SELECT descripcion FROM reclamos_estado WHERE idReclamoEstado = ?';
             const [resultado] = await conexion.query(sql, [id]);
 
             if (resultado.length === 0) {

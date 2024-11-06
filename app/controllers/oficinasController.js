@@ -23,6 +23,7 @@ export default class OficinasController {
     
     obtenerPorId = async (req, res) => {
         try {
+            console.log(req.params)
             const id = req.params.idOficina;
             validar(id, 'id');
 
@@ -90,8 +91,8 @@ export default class OficinasController {
             validar(idOficina, 'id');
 
             const listaIdEmpleados = req.body.listaIdEmpleados;
-            for (const id of listaIdEmpleados) {
-                validar(id, 'id');
+            for (const idUsuario of listaIdEmpleados) {
+                validar(idUsuario, 'id');
             }
 
             const resultado = await this.service.agregarEmpleados(idOficina, listaIdEmpleados);
@@ -112,8 +113,8 @@ export default class OficinasController {
             validar(idOficina, 'id');
 
             const listaIdEmpleados = req.body.listaIdEmpleados;
-            for (const id of listaIdEmpleados) {
-                validar(id, 'id');
+            for (const idUsuario of listaIdEmpleados) {
+                validar(idUsuario, 'id');
             }
 
             const resultado = await this.service.quitarEmpleados(idOficina, listaIdEmpleados);

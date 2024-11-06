@@ -11,7 +11,7 @@ export default class EmpleadosController {
 
     obtenerTodos = async (req, res) => {
         try {
-            const empleadosObtenidos = await this.service.obtenerTodos();
+            const empleadosObtenidos = await this.service.obtenerTodos(2);
             return res.status(200).json(empleadosObtenidos);
         } catch (error) {
             return res.status(error.estado || 500).json({ 
@@ -23,10 +23,10 @@ export default class EmpleadosController {
     
     obtenerPorId = async (req, res) => {
         try {
-            const id = req.params.idUsuario;
-            validar(id, 'id');
+            const idUsuario = req.params.idUsuario;
+            validar(idUsuario, 'id');
 
-            const empleadoObtenido = await this.service.obtenerPorId(id);
+            const empleadoObtenido = await this.service.obtenerPorId(idUsuario, 2);
             return res.status(200).json(empleadoObtenido);
         } catch (error) {
             return res.status(error.estado || 500).json({ 

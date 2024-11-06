@@ -1,7 +1,4 @@
 import ReclamosEstados from '../database/reclamosEstados.js';
-import dotenv from 'dotenv';
-
-dotenv.config()
 
 export default class ReclamosEstadosService {
     constructor() {

@@ -1,15 +1,17 @@
 import express from 'express'
 import ReclamosTiposController from '../../controllers/reclamosTiposController.js'
+import passport from "../../middlewares/passport.js"
+import { autorizarUsuarios } from '../../middlewares/methods.js'
 
 const reclamosTiposController = new ReclamosTiposController()
 const router = express.Router()
 
-router.get('/', reclamosTiposController.obtenerTodos)
+router.get('/', passport.authenticate("jwt", { session: false }), autorizarUsuarios([1]), reclamosTiposController.obtenerTodos)
 
-router.get('/:idReclamoTipo', reclamosTiposController.obtenerPorId)
+router.get('/:idReclamoTipo', passport.authenticate("jwt", { session: false }), autorizarUsuarios([1]), reclamosTiposController.obtenerPorId)
 
-router.post('/', reclamosTiposController.agregar)
+router.post('/', passport.authenticate("jwt", { session: false }), autorizarUsuarios([1]), reclamosTiposController.agregar)
 
-router.patch('/:idReclamoTipo', reclamosTiposController.modificar)
+router.patch('/:idReclamoTipo', passport.authenticate("jwt", { session: false }), autorizarUsuarios([1]), reclamosTiposController.modificar)
 
 export { router }

@@ -1,7 +1,6 @@
 import UsuariosServices from "../services/usuariosService.js";
 import jsonWebToken from 'jsonwebtoken'
 import dotenv from 'dotenv'
-import { method as authorization } from "../middlewares/methods.js"
 import validar from "../utils/validacion.js";
 
 dotenv.config()
@@ -29,15 +28,13 @@ export default class UsuariosController {
     
     actualizarPerfil = async (req, res) => {
         try {
-            // el id debe obtenerlo del usuario logueado
-            
-            const id = req.params.idUsuario;
-            validar(id, 'id');
+            const { idUsuario } = req.user;
 
             const datos = req.body;
             validar(datos, 'usuarioOpcional');
             
-            const empleadoModificado = await this.service.modificar(id, datos);
+            
+            const empleadoModificado = await this.service.modificar(idUsuario, datos);
             return res.status(200).json(empleadoModificado);
         } catch (error) {
             return res.status(error.estado || 500).json({ 

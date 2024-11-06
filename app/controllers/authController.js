@@ -11,7 +11,7 @@ export default class AuthController {
         
             const resultado = await this.service.iniciarSesion(correoElectronico, contrasenia)
             const cookieOption = {
-                path: '/',
+                path: '/'
             }
             res.cookie('jwt', resultado, cookieOption)
             return res.status(200).json(resultado)

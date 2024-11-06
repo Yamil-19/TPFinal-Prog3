@@ -33,18 +33,10 @@ const esquemas = {
     }),
 
     // Esquema de reclamo
-    reclamoRequerido: Joi.object({
+    reclamo: Joi.object({
         asunto: Joi.string().required(),
         descripcion: Joi.string().allow(''),
-        idReclamoTipo: Joi.number().integer().positive().required(),
-        idUsuarioCreador: Joi.number().integer().positive().required()
-    }),
-    reclamoOpcional: Joi.object({
-        asunto: Joi.string(),
-        descripcion: Joi.string(),
-        idReclamoTipo: Joi.number().integer().positive(),
-        idReclamoEstado: Joi.number().integer().positive(),
-        idUsuarioFinalizador: Joi.number().integer().positive()
+        idReclamoTipo: Joi.number().integer().positive().required()
     })
 }
 
