@@ -4,7 +4,7 @@ export default class Oficinas {
     
     obtenerTodos = async () => {
         try {
-            const sql = `SELECT * FROM oficinas`
+            const sql = `SELECT o.idOficina, o.nombre, rt.descripcion FROM oficinas AS o INNER JOIN reclamos_tipo AS rt ON rt.idReclamoTipo = o.idReclamoTipo`
             const [resultado] = await conexion.query(sql)
 
             return resultado
@@ -19,7 +19,7 @@ export default class Oficinas {
     
     obtenerPorId = async (id) => {
         try {
-            const sql = `SELECT * FROM oficinas WHERE idOficina = ?;`;
+            const sql = `SELECT o.idOficina, o.nombre, rt.descripcion FROM oficinas AS o INNER JOIN reclamos_tipo AS rt ON rt.idReclamoTipo = o.idReclamoTipo WHERE o.idOficina = ?;`;
             const [resultado] = await conexion.query(sql, [id]);
 
             if (resultado.length === 0) {

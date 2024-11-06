@@ -60,25 +60,28 @@ export default class UsuariosOficinas {
         }
     };
 
-    agregarEmpleados = async (lea, lem, idO) => {
+    agregarEmpleados = async (listaEmpleadosAgregar, listaEmpleadosModificar, idOficina) => {
+        let empleados = [];
         try {
             conexion.beginTransaction()
 
-            if (lea) {
-                for (const idea of lea) {
-                    await conexion.query(`INSERT INTO usuarios_oficinas (idUsuario, idOficina, activo) VALUES (?, ?, 1);`, [idea, idO]);
+            if (listaEmpleadosAgregar) {
+                for (const idEmpleadoA of listaEmpleadosAgregar) {
+                    await conexion.query(`INSERT INTO usuarios_oficinas (idUsuario, idOficina, activo) VALUES (?, ?, 1);`, [idEmpleadoA, idOficina]);
+                    empleados.push(idEmpleadoA);
                 }
             }
 
-            if (lem) {
-                for (const idem of lem) {
-                    await conexion.query(`UPDATE usuarios_oficinas SET idOficina = ?, activo = 1 WHERE idUsuario = ?;`, [idO, idem]);
+            if (listaEmpleadosModificar) {
+                for (const idEmpleadoM of listaEmpleadosModificar) {
+                    await conexion.query(`UPDATE usuarios_oficinas SET idOficina = ?, activo = 1 WHERE idUsuario = ?;`, [idOficina, idEmpleadoM]);
+                    empleados.push(idEmpleadoM);
                 }
             }
 
             conexion.commit()
 
-            return { mensaje: `Se agregaron exitosamente los empleados` }; // corregir mensaje
+            return { mensaje: `Se agregaron correctamente los empleados: ${empleados.join(', ')}` }; 
         } catch (error) {
             conexion.rollback()
 
@@ -91,16 +94,18 @@ export default class UsuariosOficinas {
     };
 
     quitarEmpleados = async (idOficina, listaIdEmpleados) => {
+        let empleados = [];
         try {
             conexion.beginTransaction()
 
-            for (const id of listaIdEmpleados) {
-                await conexion.query(`UPDATE usuarios_oficinas SET activo = 0 WHERE idOficina = ? AND idUsuario = ?;`, [idOficina, id])
+            for (const idEmpleado of listaIdEmpleados) {
+                await conexion.query(`UPDATE usuarios_oficinas SET activo = 0 WHERE idOficina = ? AND idUsuario = ?;`, [idOficina, idEmpleado]);
+                empleados.push(idEmpleado);
             }
 
             conexion.commit()
 
-            return { mensaje: `Se quitaron exitosamente los empleados` }; // corregir mensaje
+            return { mensaje: `Se quitaron correctamente los empleados: ${empleados.join(', ')}` }; 
         } catch (error) {
             conexion.rollback()
             
@@ -111,50 +116,4 @@ export default class UsuariosOficinas {
             };
         };
     }
-
-
-
-    // agregar = async (datos) => {
-    //     try {
-    //         const sql = `INSERT INTO oficinas (nombre, idReclamoTipo, activo) VALUES (?,?,1);`;
-    //         const [resultado] = await conexion.query(sql, [datos.nombre, datos.idReclamoTipo]);
-
-    //         if (resultado.affectedRows === 0) {
-    //             return { 
-    //                 estado: 500, 
-    //                 mensaje: 'No se pudo agregar la oficina' 
-    //             };
-    //         } 
-
-    //         return await conexion.query('SELECT * FROM oficinas WHERE idOficina = ?', [resultado.insertId]);
-    //     } catch (error) {
-    //         console.error('Error en agregar:', error);
-    //         return { 
-    //             estado: 500, 
-    //             mensaje: `Error en el servidor ${error}` 
-    //         };
-    //     }
-    // };
-
-    // modificar = async (id, datos) => {
-    //     try {
-    //         const sql = `UPDATE oficinas SET ? WHERE idOficina = ?`;
-    //         const [resultado] = await conexion.query(sql, [datos, id]);
-
-    //         if (resultado.affectedRows === 0) {
-    //             return { 
-    //                 estado: 500, 
-    //                 mensaje: 'No se pudo modificar la oficina' 
-    //             };
-    //         }
-
-    //         return await conexion.query('SELECT * FROM oficinas WHERE idOficina = ?', [id]);
-    //     } catch (error) {
-    //         console.error('Error en modificar:', error);
-    //         return { 
-    //             estado: 500, 
-    //             mensaje: `Error en el servidor ${error}` 
-    //         };
-    //     }
-    // };
 }

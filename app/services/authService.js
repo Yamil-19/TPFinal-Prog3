@@ -3,11 +3,13 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 import Usuarios from '../database/usuario.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export default class AuthService {
     constructor(){
         this.usuarios = new Usuarios()
-    }
+    };
 
     iniciarSesion = async (correoElectronico, contrasenia) => {
         const usuario = await this.usuarios.obtenerPorEmail(correoElectronico);
@@ -26,7 +28,7 @@ export default class AuthService {
             };
         }
 
-        const token = jwt.sign({ id: usuario.idUsuario }, 'tu_secreto_jwt', { expiresIn: '1h' });
+        const token = jwt.sign({ id: usuario.idUsuario}, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION });
         return token;
-    }
+    };
 }

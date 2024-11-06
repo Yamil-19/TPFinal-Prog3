@@ -27,10 +27,6 @@ app.use(express.static(__dirname + '/public'))
 app.use(passport.initialize())
 app.use('/auth', v1AuthRouter)
 
-app.get('/perfil', passport.authenticate("jwt", { session: false }), (req, res) => {
-    res.json({ message: 'Perfil del usuario', usuario: req.user });
-});
-
 app.use('/', v1AppWebRouter)
 
 app.use('/api/empleados', v1EmpleadosRouter)

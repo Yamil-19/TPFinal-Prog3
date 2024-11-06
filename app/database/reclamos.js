@@ -1,6 +1,7 @@
 import { conexion } from "./conexion.js";
 
 export default class Reclamos {   
+
     obtenerTodos = async (idUsuarioTipo, id) => {
         try {
             let sql = `SELECT * FROM reclamos `;
@@ -26,8 +27,9 @@ export default class Reclamos {
     
     obtenerIdReclamoTipo = async (idUsuario) => {
         try {
-            const sql = `SELECT o.idReclamoTipo FROM oficinas AS o INNER JOIN usuarios_oficinas AS uo 
-                        ON o.idOficina = uo.idOficina WHERE uo.idUsuario = ?;`;
+            const sql = `SELECT o.idReclamoTipo FROM oficinas AS o 
+                        INNER JOIN usuarios_oficinas AS uo ON o.idOficina = uo.idOficina 
+                        WHERE uo.idUsuario = ?;`;
             const [resultado] = await conexion.query(sql, [idUsuario])
 
             if (resultado.length === 0) {
@@ -43,11 +45,19 @@ export default class Reclamos {
         }
     }
 
-    obtenerPorId = async (id) => {
+    obtenerPorId = async (idReclamo, idUsuarioTipo, id) => {
         try {
-            const sql = `SELECT * FROM reclamos WHERE idReclamo = ?;`;
-            const [resultado] = await conexion.query(sql, [id]);
-           
+            let sql = `SELECT * FROM reclamos WHERE idReclamo = ? `;
+            
+            if (idUsuarioTipo === 2) {
+                sql += `AND idReclamoTipo = ?`;
+            }
+            
+            if (idUsuarioTipo === 3) {
+                sql += `AND idUsuarioCreador = ?`;
+            }
+            
+            const [resultado] = await conexion.query(sql, [idReclamo, id]);
             if (resultado.length === 0) {
                 return null;
             }
@@ -64,8 +74,9 @@ export default class Reclamos {
 
     agregar = async (datos) => {
         try {
-            const sql = `INSERT INTO reclamos SET ?;`;
-            const [resultado] = await conexion.query(sql, [datos]);
+            const sql = `INSERT INTO reclamos (asunto, descripcion, fechaCreado, idReclamoEstado, idReclamoTipo, idUsuarioCreador)
+                        VALUES(?, ?, NOW(), 1, ?, ?)`;
+            const [resultado] = await conexion.query(sql, [datos.asunto, datos.descripcion, datos.idReclamoTipo, datos.idUsuarioCreador]);
 
             if (resultado.affectedRows === 0) {
                 return { 
@@ -93,7 +104,7 @@ export default class Reclamos {
             if (resultado.affectedRows === 0) {
                 return { 
                     estado: 500, 
-                    mensaje: 'No se pudo agregar el reclamo' 
+                    mensaje: 'No se pudo modificar el reclamo' 
                 };
             } 
 

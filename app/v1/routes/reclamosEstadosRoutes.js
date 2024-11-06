@@ -1,15 +1,17 @@
 import express from 'express'
 import ReclamosEstadosController from '../../controllers/reclamosEstadosController.js'
+import passport from "../../middlewares/passport.js"
+import { autorizarUsuarios } from '../../middlewares/methods.js'
 
 const reclamosEstadosController = new ReclamosEstadosController()
 const router = express.Router()
 
-router.get('/', reclamosEstadosController.obtenerTodos)
+router.get('/', passport.authenticate("jwt", { session: false }), autorizarUsuarios([1]), reclamosEstadosController.obtenerTodos)
 
-router.get('/:idReclamoEstado', reclamosEstadosController.obtenerPorId)
+router.get('/:idReclamoEstado', passport.authenticate("jwt", { session: false }), autorizarUsuarios([1]), reclamosEstadosController.obtenerPorId)
 
-router.post('/', reclamosEstadosController.agregar)
+router.post('/', passport.authenticate("jwt", { session: false }), autorizarUsuarios([1]), reclamosEstadosController.agregar)
 
-router.patch('/:idReclamoEstado', reclamosEstadosController.modificar)
+router.patch('/:idReclamoEstado', passport.authenticate("jwt", { session: false }), autorizarUsuarios([1]), reclamosEstadosController.modificar)
 
 export { router }

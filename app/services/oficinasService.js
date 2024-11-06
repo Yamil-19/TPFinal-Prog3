@@ -56,14 +56,16 @@ export default class OficinasService {
         return resultado;
     };
     
-    modificar = async (id, descripcion) => {
+    modificar = async (id, datos) => {
         // Verificar que el ID pasado por parametros exista
         await this.obtenerPorId(id);
 
         // Verificar el ID de reclamoTipo
-        await this.reclamosTipos.obtenerPorId(datos.idReclamoTipo);
+        if (datos.idReclamoTipo) {
+            await this.reclamosTipos.obtenerPorId(datos.idReclamoTipo);
+        }
 
-        const resultado = await this.oficinas.modificar(id, descripcion);
+        const resultado = await this.oficinas.modificar(id, datos);
         if (!resultado || resultado.estado) {
             throw { 
                 estado: resultado.estado || 500, 
@@ -74,8 +76,8 @@ export default class OficinasService {
     };
 
     agregarEmpleados = async (idOficina, listaIdEmpleados) => {
-        const lea = []
-        const lem = []
+        const listaEmpleadosAgregar = []
+        const listaEmpleadosModificar = []
 
         // verificar idOficina
         await this.obtenerPorId(idOficina);
@@ -85,16 +87,23 @@ export default class OficinasService {
             await this.usuarios.obtenerPorId(id)
         }
         
-        for (const id of listaIdEmpleados) {
-            const estaEnUO = await this.usuariosOficinas.obtenerPorIdUsuario(id)
+        for (const idEmpleado of listaIdEmpleados) {
+            const estaEnUO = await this.usuariosOficinas.obtenerPorIdUsuario(idEmpleado)
             if (!estaEnUO) {
-                lea.push(id)
+                listaEmpleadosAgregar.push(idEmpleado)
             } else {
-                lem.push(id)
+                listaEmpleadosModificar.push(idEmpleado)
             }
         }
 
-        return await this.usuariosOficinas.agregarEmpleados(lea, lem, idOficina)
+        const resultado = await this.usuariosOficinas.agregarEmpleados(listaEmpleadosAgregar, listaEmpleadosModificar, idOficina)
+        if (!resultado || resultado.estado) {
+            throw { 
+                estado: resultado.estado || 500, 
+                mensaje: resultado.mensaje || 'No se pudo agregar los empleados' 
+            };
+        }
+        return resultado;
 
     }
 
@@ -109,11 +118,15 @@ export default class OficinasService {
             await this.usuarios.obtenerPorId(id);
         };
         
-        for (const id of listaIdEmpleados) {
-            const resultado = await this.usuariosOficinas.obtenerPorIdUsuario(id);
+
+        for (const idEmpleado of listaIdEmpleados) {
+            const resultado = await this.usuariosOficinas.obtenerPorIdUsuario(idEmpleado);
+            
             if (!resultado || resultado.activo === 0) {
-                errores.push(`El empleado ${id} no está asignado a una oficina`);
-            };
+                errores.push(`El empleado ${idEmpleado} no está asignado a una oficina`);
+            } else if (resultado.idOficina !== idOficina) {
+                errores.push(`El empleado ${idEmpleado} no está asignado a la oficina ${idOficina}`);
+            }
         };
         
         if (errores.length) {
@@ -123,7 +136,13 @@ export default class OficinasService {
             };
         };
 
-        return await this.usuariosOficinas.quitarEmpleados(idOficina, listaIdEmpleados);
+        const resultado = await this.usuariosOficinas.quitarEmpleados(idOficina, listaIdEmpleados);
+        if (!resultado || resultado.estado) {
+            throw { 
+                estado: resultado.estado || 500, 
+                mensaje: resultado.mensaje || 'No se pudo quitar los empleados' 
+            };
+        }
+        return resultado;
     };
-
 }

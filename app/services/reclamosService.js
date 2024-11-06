@@ -1,6 +1,8 @@
 import Reclamos from '../database/reclamos.js';
 import dotenv from 'dotenv';
 import UsuariosService from './usuariosService.js';
+import ReclamosTiposService from './reclamosTiposService.js';
+import ReclamosEstadosService from "./reclamosEstadosService.js";
 
 dotenv.config()
 
@@ -8,9 +10,11 @@ export default class ReclamosService {
     constructor() {
         this.reclamos = new Reclamos()
         this.usuarios = new UsuariosService()
+        this.reclamosTipos = new ReclamosTiposService()
+        this.reclamosEstados = new ReclamosEstadosService()
     }
 
-    obtenerTodos = async (idUsuarioTipo, idUsuario) => {
+    obtenerTodos = async (idUsuario, idUsuarioTipo) => {
         let id = idUsuario
         if (idUsuarioTipo === 2) {
             id = await this.reclamos.obtenerIdReclamoTipo(idUsuario);
@@ -27,8 +31,13 @@ export default class ReclamosService {
         return resultado
     }
     
-    obtenerPorId = async (id) => {
-        const resultado = await this.reclamos.obtenerPorId(id);
+    obtenerPorId = async (idReclamo, idUsuario, idUsuarioTipo) => {
+        let id = idUsuario
+        if (idUsuarioTipo === 2) {
+            id = await this.reclamos.obtenerIdReclamoTipo(idUsuario);
+        }
+
+        const resultado = await this.reclamos.obtenerPorId(idReclamo, idUsuarioTipo, id);
         if (!resultado) {
             throw { 
                 estado: 404, 
@@ -44,32 +53,66 @@ export default class ReclamosService {
     }
 
     agregar = async (datos) => {
-        // agregar la fecha de creacion
-        // verificar ID de reclamoTipo
-        // verificar ID de usuarioCreador
-        // verificar que usuario sea cliente
-        datos.idReclamoEstado = 1
-        datos.fechaCreado = new Date().toISOString()
+        await this.reclamosTipos.obtenerPorId(datos.idReclamoTipo);
 
-        return await this.reclamos.agregar(datos);
+        const resultado = await this.reclamos.agregar(datos);
+        if (!resultado || resultado.estado) {
+            throw { 
+                estado: resultado.estado || 500, 
+                mensaje: resultado.mensaje || 'No se pudo agregar el reclamo' 
+            };
+        }
+        return resultado;
     }
 
-    modificar = async (id, datos) => {
-        return await this.reclamos.modificar(id, datos);
+    atenderReclamo = async (idReclamo, datos, idUsuario) => {
+        // verificar ID del reclamo, y si puede ser atendido
+        const reclamo = await this.obtenerPorId(idReclamo, idUsuario, 2)
+
+        if (reclamo.idReclamoEstado === 3 || reclamo.idReclamoEstado === 4) {
+            throw {
+                estado: 400,
+                mensaje: 'No se puede atender el reclamo'
+            }
+        } 
+
+        // verificar ID del reclamoEstado, en el caso que el nuevo estado sea 'Finalizado' se agregan los datos correspondientes
+        const reclamoEstado = await this.reclamosEstados.obtenerPorId(datos.idReclamoEstado)
+        if (reclamoEstado.descripcion === 'Finalizado') {
+            datos.idUsuarioFinalizador = idUsuario
+            datos.fechaFinalizado = new Date().toISOString()
+        }
+        
+        const resultado = await this.reclamos.modificar(idReclamo, datos);
+        if (!resultado || resultado.estado) {
+            throw { 
+                estado: resultado.estado || 500, 
+                mensaje: 'No se pudo atender el reclamo' 
+            };
+        }
+        return resultado;
     }
 
-    atenderReclamo = async (idReclamo, datos) => {
-        // verificar ID del reclamo
+    cancelarReclamo = async (idReclamo, idUsuario) =>  {
+        // verificar ID del reclamo, y si puede ser cancelado
+        const reclamo = await this.obtenerPorId(idReclamo, idUsuario, 3)
+        if (reclamo.idReclamoEstado !== 1) {
+            throw {
+                estado: 400,
+                mensaje: 'No se puede cancelar el reclamo'
+            }
+        }
+        const datos = {
+            idReclamoEstado: 3
+        }
 
-        // verificar ID del reclamoEstado
-        return await this.reclamos.modificar(idReclamo, datos);
-    }
-
-    cancelarReclamo = async (idReclamo) =>  {
-        // verificar ID del reclamo
-        await this.obtenerPorId(idReclamo)
-
-        // verificar ID del reclamoEstado
-        return await this.reclamos.modificar(idReclamo);
+        const resultado = await this.reclamos.modificar(idReclamo, datos);
+        if (!resultado || resultado.estado) {
+            throw { 
+                estado: resultado.estado || 500, 
+                mensaje: 'No se pudo cancelar el reclamo' 
+            };
+        }
+        return resultado;
     }
 }

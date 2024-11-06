@@ -2,10 +2,13 @@ import bcryptjs from "bcryptjs"
 import { conexion } from './conexion.js';
 
 export default class Usuarios {
-    obtenerTodos = async () => {
+    obtenerTodos = async (idUsuarioTipo) => {
         try {
-            const sql = `SELECT * FROM usuarios;`;
-            const [resultado] = await conexion.query(sql);
+            // let sql = `SELECT * FROM usuarios `;
+            let sql = `SELECT idUsuario, CONCAT(nombre, ' ', apellido) AS 'nombre completo', correoElectronico FROM usuarios `;
+            if (idUsuarioTipo === 2)
+                sql += `WHERE idUsuarioTipo = ?`
+            const [resultado] = await conexion.query(sql, [idUsuarioTipo]);
             return resultado;
         } catch (error) {
             console.error('Error en obtenerTodos:', error);
@@ -16,10 +19,12 @@ export default class Usuarios {
         }
     }
     
-    obtenerPorId = async (id) => {
+    obtenerPorId = async (idUsuario, idUsuarioTipo) => {
         try {
-            const sql = `SELECT u.idUsuario, CONCAT(u.nombre, ' ', u.apellido) as usuario, u.idUsuarioTipo FROM usuarios AS u WHERE u.idUsuario = ?;`;
-            const [resultado] = await conexion.query(sql, [id]);
+            let sql = `SELECT u.idUsuario, CONCAT(u.nombre, ' ', u.apellido) as usuario, u.idUsuarioTipo FROM usuarios AS u WHERE u.idUsuario = ? `;
+            if (idUsuarioTipo === 2)
+                sql += `AND u.idUsuarioTipo = ?`
+            const [resultado] = await conexion.query(sql, [idUsuario, idUsuarioTipo]);
 
             if (resultado.length === 0) {
                 return null;
@@ -47,7 +52,7 @@ export default class Usuarios {
                 };
             } 
 
-            return await conexion.query('SELECT * FROM usuarios WHERE idUsuario = ?', [resultado.insertId]);
+            return `Se agregó correctamente el usuario ${resultado.insertId}`;
         } catch (error) {
             console.error('Error en agregar:', error);
             return { 
@@ -69,7 +74,7 @@ export default class Usuarios {
                 };
             }
 
-            return await conexion.query('SELECT * FROM usuarios WHERE idUsuario = ?', [id]);
+            return `Se modificó correctamente el usuario ${resultado.insertId}`;
         } catch (error) {
             console.error('Error en modificar:', error);
             return { 

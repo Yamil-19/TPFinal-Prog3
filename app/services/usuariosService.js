@@ -12,8 +12,8 @@ export default class UsuariosService {
         this.usuarios = new Usuarios()
     }
 
-    obtenerTodos = async () => {
-        const resultado = await this.usuarios.obtenerTodos();
+    obtenerTodos = async (idUsuarioTipo = 0) => {
+        const resultado = await this.usuarios.obtenerTodos(idUsuarioTipo);
         if (!resultado || resultado.estado) {
             throw { 
                 estado: resultado.estado || 500, 
@@ -23,8 +23,8 @@ export default class UsuariosService {
         return resultado;
     }
 
-    obtenerPorId = async (id) => {
-        const resultado = await this.usuarios.obtenerPorId(id)
+    obtenerPorId = async (idUsuario, idUsuarioTipo = 0) => {
+        const resultado = await this.usuarios.obtenerPorId(idUsuario, idUsuarioTipo)
         if (!resultado) {
             throw { 
                 estado: 404, 
@@ -46,7 +46,7 @@ export default class UsuariosService {
         // hashear contraseña
         const salt = await bcryptjs.genSalt(5);
         const constraseñaHasheada = await bcryptjs.hash(datos.contrasenia, salt);
-        datos.contrasenia = constraseñaHasheada ;
+        datos.contrasenia = constraseñaHasheada;
 
         const resultado = await this.usuarios.agregar(datos);
         if (!resultado || resultado.estado) {
@@ -58,10 +58,7 @@ export default class UsuariosService {
         return resultado;
     };
 
-    modificar = async (id, datos) => {
-        // verificar que el ID exista
-        await this.obtenerPorId(id); // probablemente innecesario
-
+    modificar = async (idUsuario, datos) => {
         // verificar si el email esta en uso
         await this.verificarEmail(datos.correoElectronico);
         
@@ -72,7 +69,7 @@ export default class UsuariosService {
             datos.contrasenia = constraseniaHasheada;
         };
 
-        const resultado = await this.usuarios.modificar(id, datos);
+        const resultado = await this.usuarios.modificar(idUsuario, datos);
         if (!resultado || resultado.estado) {
             throw { 
                 estado: resultado.estado || 500, 
@@ -83,13 +80,13 @@ export default class UsuariosService {
     };
 
     verificarEmail = async (correoElectronico) => {
-        const usuario = await this.usuarios.obtenerPorEmail(correoElectronico);
-        if (usuario && usuario.estado) {
+        const resultado = await this.usuarios.obtenerPorEmail(correoElectronico);
+        if (resultado && resultado.estado) {
             throw { 
-                estado: usuario.estado, 
-                mensaje: usuario.mensaje 
+                estado: resultado.estado, 
+                mensaje: resultado.mensaje 
             };
-        } else if (usuario) {
+        } else if (resultado) {
             throw { 
                 estado: 400, 
                 mensaje: `El email está en uso` 
