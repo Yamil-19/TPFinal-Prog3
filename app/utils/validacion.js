@@ -44,13 +44,6 @@ const esquemas = {
 // Funcion general para la validacion
 const validar = (datos, tipo) => {
     const esquema = esquemas[tipo];
-    if (!esquema) {
-        throw { 
-            estado: 500, 
-            mensaje: 'Esquema de validación no encontrado'
-        };
-    }
-
     const { error } = esquema.validate(datos);
     if (error) {
         throw { 

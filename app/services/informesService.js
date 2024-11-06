@@ -13,7 +13,6 @@ export default class InformeService {
     informeReclamosCsv = async (datosReporte) => {
         const ruta = path.join(__dirname, '../pages/reclamos.csv'); 
 
-        // configuro un escrito csv
         const csvWriter = createObjectCsvWriter({
             path: ruta, 
             header: [
@@ -26,10 +25,8 @@ export default class InformeService {
             encoding:'utf-8' 
         });
 
-        // genero csv
         await csvWriter.writeRecords(datosReporte);
 
-        //
         return ruta;
     }
  

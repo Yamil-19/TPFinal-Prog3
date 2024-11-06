@@ -10,12 +10,12 @@ export default class AuthController {
             const { correoElectronico, contrasenia } = req.body
         
             const resultado = await this.service.iniciarSesion(correoElectronico, contrasenia)
-            const cookieOption = {
-                path: '/'
-            }
-            res.cookie('jwt', resultado, cookieOption)
-            // return res.status(200).json(resultado)
-            res.status(201).send({ status: "OK", data: resultado, redirect: '/cliente'});
+            // const cookieOption = {
+            //     path: '/'
+            // }
+            // res.cookie('jwt', resultado, cookieOption)
+            return res.status(200).json(resultado)
+            // res.status(201).json({ status: "OK", data: resultado, redirect: '/cliente'});
         } catch (error) {
             return res.status(error.estado || 500).json({ 
                 estado: error.estado || 500, 

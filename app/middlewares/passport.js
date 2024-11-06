@@ -10,11 +10,9 @@ const opts = {
 };
 
 passport.use(new JwtStrategy(opts, async (jwt_payload, done) => {
-	// console.log('JWT Payload:', jwt_payload); 
 	try {
 		const user = new Usuarios()
 		const usuario = await user.obtenerPorId(jwt_payload.id);
-		// console.log(usuario)
 		if (usuario) {
 			return done(null, usuario);
 		} else {

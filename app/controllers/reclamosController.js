@@ -109,17 +109,13 @@ export default class ReclamosController {
                     mensaje: "Formato inválido para el informe."    
                 })
             }
-            // generar informe
             const {buffer, path, headers} = await this.service.generarInforme(formato);
 
-            // setear la cabecera de respuesta 
             res.set(headers)
 
             if (formato === 'pdf') {
-                // respuesta al cliente  
                 res.status(200).end(buffer);
             } else if (formato === 'csv') {
-                // respuesta al cliente
                 res.status(200).download(path, (err) => {
                     if (err) {
                         return res.status(500).send({

@@ -85,8 +85,7 @@ export default class Reclamos {
                 };
             } 
 
-            const [nuevoReclamo] = await conexion.query('SELECT * FROM reclamos WHERE idReclamo = ?', [resultado.insertId]);
-            return nuevoReclamo[0]
+            return `Se agregó correctamente el reclamo: ${resultado.insertId}`;
         } catch (error) {
             console.error('Error en agregar:', error);
             return { 
@@ -96,10 +95,10 @@ export default class Reclamos {
         }
     };
 
-    modificar = async (id, datos) => {
+    modificar = async (idReclamo, datos) => {
         try {
             const sql = `UPDATE reclamos SET ? WHERE idReclamo = ?`;
-            const [resultado] = await conexion.query(sql, [datos, id]);
+            const [resultado] = await conexion.query(sql, [datos, idReclamo]);
 
             if (resultado.affectedRows === 0) {
                 return { 
@@ -108,7 +107,7 @@ export default class Reclamos {
                 };
             } 
 
-            return await conexion.query('SELECT * FROM reclamos WHERE idReclamo = ?', [id]);
+            return `Se modificó correctamente el reclamo: ${idReclamo}`;
         } catch (error) {
             console.error('Error en agregar:', error);
             return { 

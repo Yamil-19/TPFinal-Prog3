@@ -8,12 +8,12 @@ export default class NotificacionesService {
     enviarCorreo = async (datosCorreo) => {        
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = path.dirname(__filename);
-        const plantillaPath = path.join(__dirname, '../utiles/handlebars/plantilla.hbs');
+        const plantillaPath = path.join(__dirname, '../pages/handlebars/email.hbs');
         const plantilla = fs.readFileSync(plantillaPath, 'utf-8');
 
         const template = handlebars.compile(plantilla);
         const datos = {
-            nombre: datosCorreo.cliente,  
+            nombre: datosCorreo.nombre,  
             reclamo: datosCorreo.reclamo,
             estado: datosCorreo.estado
         };

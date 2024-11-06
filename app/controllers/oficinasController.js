@@ -70,20 +70,6 @@ export default class OficinasController {
         }
     }
     
-    agregarUsuarioOficina = async (req, res) => {
-        try {
-            const datos = req.body;
-            // validar(datos, 'oficinaRequerida');
-            
-            const nuevosEmpleados = await this.service.agregarUsuarioOficina(datos.usuarios, datos.idOficina);
-            return res.status(200).json(nuevosEmpleados);
-        } catch (error) {
-            return res.status(error.estado || 500).json({ 
-                estado: error.estado || 500, 
-                data: { error: error.mensaje } 
-            });
-        }
-    }
     // agregar empleados
     agregarEmpleados = async (req, res) => {
         try {

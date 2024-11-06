@@ -4,6 +4,7 @@ import UsuariosService from './usuariosService.js';
 import InformeService from './informesService.js';
 import ReclamosTiposService from './reclamosTiposService.js';
 import ReclamosEstadosService from "./reclamosEstadosService.js";
+import NotificacionesService from './notificacionesService.js';
 
 dotenv.config()
 
@@ -14,6 +15,7 @@ export default class ReclamosService {
         this.informes = new InformeService()
         this.reclamosTipos = new ReclamosTiposService()
         this.reclamosEstados = new ReclamosEstadosService()
+        this.notificaciones = new NotificacionesService()
     }
 
     obtenerTodos = async (idUsuario, idUsuarioTipo) => {
@@ -23,10 +25,10 @@ export default class ReclamosService {
         }
         
         const resultado = await this.reclamos.obtenerTodos(idUsuarioTipo, id);
-        if (!resultado) {
+        if (!resultado || resultado.estado) {
             throw { 
-                estado: 400, 
-                mensaje: 'no se wacho, algo anda mal' 
+                estado: resultado.estado || 500, 
+                mensaje: resultado.mensaje || 'Error en el servidor' 
             };
         }
 
@@ -92,6 +94,14 @@ export default class ReclamosService {
                 mensaje: 'No se pudo atender el reclamo' 
             };
         }
+        const usuario = await this.usuarios.obtenerPorId(reclamo.idUsuarioCreador, 3)
+        const datosCorreo = {
+            nombre: usuario.usuario,
+            reclamo: reclamo.asunto,
+            estado: reclamoEstado.descripcion,
+            correoElectronico: usuario.correoElectronico
+        }
+        await this.notificaciones.enviarCorreo(datosCorreo)
         return resultado;
     }
 
