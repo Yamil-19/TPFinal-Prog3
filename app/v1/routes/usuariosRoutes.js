@@ -4,10 +4,8 @@ import UsuariosController from '../../controllers/usuariosController.js'
 const usuariosController = new UsuariosController()
 const router = express.Router()
 
+router.post('/registro', usuariosController.registrar)
 
-
-router.post('/register', usuariosController.register)
-
-router.post('/login', usuariosController.iniciarSesion)
+router.patch('/actualizar-perfil', usuariosController.actualizarPerfil)
 
 export { router }

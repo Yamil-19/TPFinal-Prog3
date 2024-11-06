@@ -50,7 +50,7 @@ const esquemas = {
 
 
 // Funcion general para la validacion
-export function validar(datos, tipo) {
+const validar = (datos, tipo) => {
     const esquema = esquemas[tipo];
     if (!esquema) {
         throw { 
@@ -67,3 +67,5 @@ export function validar(datos, tipo) {
         };
     }
 }
+
+export default validar

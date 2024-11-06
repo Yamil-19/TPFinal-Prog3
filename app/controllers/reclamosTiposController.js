@@ -1,5 +1,5 @@
 import ReclamosTiposService from "../services/reclamosTiposService.js";
-import { validar } from "../utils/validacion.js";
+import validar from "../utils/validacion.js";
 import dotenv from 'dotenv';
 
 dotenv.config()

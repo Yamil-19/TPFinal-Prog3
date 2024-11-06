@@ -1,6 +1,9 @@
 import Oficinas from '../database/oficinas.js';
-import EmpleadosService from './empleadosService.js';
+// import EmpleadosService from './empleadosService.js';
 import ReclamosTiposService from './reclamosTiposService.js';
+import UsuariosService from './usuariosService.js';
+import UsuariosOficinas from '../database/usuariosOficinas.js';
+
 import dotenv from 'dotenv';
 
 dotenv.config()
@@ -9,7 +12,8 @@ export default class OficinasService {
     constructor() {
         this.oficinas = new Oficinas()
         this.reclamosTipos = new ReclamosTiposService()
-        this.empleados = new EmpleadosService()
+        this.usuarios = new UsuariosService()
+        this.usuariosOficinas = new UsuariosOficinas()
     }
 
     obtenerTodos = async () => {
@@ -69,43 +73,58 @@ export default class OficinasService {
         }
         return resultado;
     };
-    
-    agregarUsuarioOficina = async (usuarios, idOficina) => {
-        const listaEmpleados = await this.oficinas.obtenerUsuarios(idOficina)
-        for (const e of listaEmpleados) {
-            if (!usuarios.includes(e.idUsuario)) {
-                const usuarioDesactivado = await this.oficinas.activo(0, e.idUsuario)
-                // console.log('Desactivo:', usuarioDesactivado)
-            }
-        }
-        for (const u of usuarios) {
-            // const usuariosOficinas = await this.oficinas.obtenerUsuarioPorId(u)
-            // if (usuariosOficinas) {
-            //     for (const uo of usuariosOficinas) {
-            //         const oficina = a
-            //     }
-            // }
-            const empleado = listaEmpleados.find(e => e.idUsuario === u);
-            if (empleado){
-                if(empleado.activo === 0) {
-                    const usuarioActivado = await this.oficinas.activo(1, empleado.idUsuario)
-                    // console.log('Desactivo:', usuarioActivado)
-                }
-            } else {
-                const resultado = await this.oficinas.agregarUsuarioOficina(u, idOficina);
 
-                if (!resultado || resultado.estado) {
-                    throw { 
-                        estado: resultado.estado || 500, 
-                        mensaje: resultado.mensaje || 'No se pudo agregar la oficina' 
-                    };
-                }
-                return resultado;
+    agregarEmpleados = async (idOficina, listaIdEmpleados) => {
+        const lea = []
+        const lem = []
+
+        // verificar idOficina
+        await this.obtenerPorId(idOficina);
+
+        // verificar el id de los empleados
+        for (const id of listaIdEmpleados) {
+            await this.usuarios.obtenerPorId(id)
+        }
+        
+        for (const id of listaIdEmpleados) {
+            const estaEnUO = await this.usuariosOficinas.obtenerPorIdUsuario(id)
+            if (!estaEnUO) {
+                lea.push(id)
+            } else {
+                lem.push(id)
             }
         }
+
+        return await this.usuariosOficinas.agregarEmpleados(lea, lem, idOficina)
+
+    }
+
+    quitarEmpleados = async (idOficina, listaIdEmpleados) =>{
+        const errores = [];
+
+        // verificar idOficina
+        await this.obtenerPorId(idOficina);
+
+        // verificar el id de los empleados
+        for (const id of listaIdEmpleados) {
+            await this.usuarios.obtenerPorId(id);
+        };
+        
+        for (const id of listaIdEmpleados) {
+            const resultado = await this.usuariosOficinas.obtenerPorIdUsuario(id);
+            if (!resultado || resultado.activo === 0) {
+                errores.push(`El empleado ${id} no está asignado a una oficina`);
+            };
+        };
+        
+        if (errores.length) {
+            throw {
+                estado: 400, 
+                mensaje: errores
+            };
+        };
+
+        return await this.usuariosOficinas.quitarEmpleados(idOficina, listaIdEmpleados);
     };
-    // agregar empleados
-    
-    // quitar empleados
-    
+
 }

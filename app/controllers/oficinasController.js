@@ -1,5 +1,5 @@
 import OficinasService from "../services/oficinasService.js";
-import { validar } from "../utils/validacion.js";
+import validar from "../utils/validacion.js";
 import dotenv from 'dotenv';
 
 dotenv.config()
@@ -84,6 +84,45 @@ export default class OficinasController {
         }
     }
     // agregar empleados
+    agregarEmpleados = async (req, res) => {
+        try {
+            const idOficina = req.body.idOficina;
+            validar(idOficina, 'id');
+
+            const listaIdEmpleados = req.body.listaIdEmpleados;
+            for (const id of listaIdEmpleados) {
+                validar(id, 'id');
+            }
+
+            const resultado = await this.service.agregarEmpleados(idOficina, listaIdEmpleados);
+            return res.status(200).json(resultado);
+        } catch (error) {
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
+            });
+        }
+        
+    }
 
     // quitar empleados
+    quitarEmpleados = async (req, res) => {
+        try {
+            const idOficina = req.body.idOficina;
+            validar(idOficina, 'id');
+
+            const listaIdEmpleados = req.body.listaIdEmpleados;
+            for (const id of listaIdEmpleados) {
+                validar(id, 'id');
+            }
+
+            const resultado = await this.service.quitarEmpleados(idOficina, listaIdEmpleados);
+            return res.status(200).json(resultado);
+        } catch (error) {
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
+            });
+        }
+    }
 }

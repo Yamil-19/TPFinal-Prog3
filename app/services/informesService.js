@@ -6,14 +6,12 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default class InformeService {
     
     informeReclamosCsv = async (datosReporte) => {
-        let ruta = path.resolve(__dirname, '..');
-        ruta = path.join(ruta, '/utiles/reclamos.csv'); 
+        const ruta = path.join(__dirname, '../pages/reclamos.csv'); 
 
         // configuro un escrito csv
         const csvWriter = createObjectCsvWriter({
