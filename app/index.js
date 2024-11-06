@@ -46,8 +46,8 @@ app.use('/api/v1/reclamos', v1ReclamosRouter)
 app.use('/api/reclamosTipos', v1ReclamosTiposRouter)
 app.use('/api/v1/reclamosTipos', v1ReclamosTiposRouter)
 
-app.use('/api', v1UsuariosRouter)
-app.use('/v1/api', v1UsuariosRouter)
+app.use('/api/usuarios', v1UsuariosRouter)
+app.use('/v1/api/usuarios', v1UsuariosRouter)
 
 
 app.listen(puerto, () => {
