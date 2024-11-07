@@ -10,7 +10,21 @@
 - Rodriguez Cabrera Sofia
 
 ## Inicialización de la Aplicación 
-Para iniciar la aplicación, ejecuta el comando: 
+Primero agregar dentro de la carpeta de la API un archivo `.env` con los datos correspondientes.
+
+Ejemplo de archivo:
+```
+PUERTO=3000
+DB_HOST=localhost
+DB_USER=root
+DB_NAME=tp_prog
+JWT_SECRET=textosecretoDECIFRADO
+JWT_EXPIRATION=1h
+CORREO=tucorreo@gmail.com
+CLAVE=tuclave
+```
+
+Finalmente para iniciar la aplicación, ejecuta el comando: 
 `npm run dev`
 
 ## Tecnologías y Librerías Utilizadas
