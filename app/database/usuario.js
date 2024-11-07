@@ -4,9 +4,9 @@ import { conexion } from './conexion.js';
 export default class Usuarios {
     obtenerTodos = async (idUsuarioTipo) => {
         try {
-            let sql = `SELECT idUsuario, CONCAT(nombre, ' ', apellido) AS 'nombre completo', correoElectronico FROM usuarios `;
+            let sql = `SELECT idUsuario, CONCAT(nombre, ' ', apellido) AS 'nombre completo', correoElectronico FROM usuarios WHERE activo = 1 `;
             if (idUsuarioTipo === 2)
-                sql += `WHERE idUsuarioTipo = ?`
+                sql += `AND idUsuarioTipo = ?`
             const [resultado] = await conexion.query(sql, [idUsuarioTipo]);
             return resultado;
         } catch (error) {
@@ -20,7 +20,7 @@ export default class Usuarios {
     
     obtenerPorId = async (idUsuario, idUsuarioTipo) => {
         try {
-            let sql = `SELECT u.idUsuario, CONCAT(u.nombre, ' ', u.apellido) as usuario, u.idUsuarioTipo, u.correoElectronico FROM usuarios AS u WHERE u.idUsuario = ? `;
+            let sql = `SELECT u.idUsuario, CONCAT(u.nombre, ' ', u.apellido) as usuario, u.idUsuarioTipo, u.correoElectronico FROM usuarios AS u WHERE u.idUsuario = ? AND activo = 1 `;
             if (idUsuarioTipo)
                 sql += `AND u.idUsuarioTipo = ?`
             const [resultado] = await conexion.query(sql, [idUsuario, idUsuarioTipo]);

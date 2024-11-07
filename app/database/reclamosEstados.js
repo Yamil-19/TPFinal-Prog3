@@ -4,7 +4,7 @@ export default class ReclamosEstados {
     
     obtenerTodos = async () => {
         try {
-            const sql = 'SELECT idReclamoEstado, descripcion FROM reclamos_estado';
+            const sql = 'SELECT idReclamoEstado, descripcion FROM reclamos_estado WHERE activo = 1';
             const [resultado] = await conexion.query(sql);
 
             return resultado;
@@ -19,7 +19,7 @@ export default class ReclamosEstados {
     
     obtenerPorId = async (idReclamoEstado) => {
         try {
-            const sql = 'SELECT descripcion FROM reclamos_estado WHERE idReclamoEstado = ?';
+            const sql = 'SELECT descripcion FROM reclamos_estado WHERE idReclamoEstado = ? AND activo = 1';
             const [resultado] = await conexion.query(sql, [idReclamoEstado]);
 
             if (resultado.length === 0) {
