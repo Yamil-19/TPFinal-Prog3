@@ -67,7 +67,7 @@ La aplicación utiliza las siguientes tecnologías y librerías:
     - `contrasenia` (requerido): Contraseña del usuario.
 
 - **PATCH /api/usuarios/actualizar-perfil**
-  - Descripción: Actualizar el perfil del usuario.
+  - Descripción: Actualizar el perfil del usuario que tiene la sesión iniciada.
   - Cuerpo de la solicitud:
     - `nombre` (opcional): Nombre del usuario.
     - `apellido` (opcional): Apellido del usuario.
@@ -205,15 +205,4 @@ La aplicación utiliza las siguientes tecnologías y librerías:
     - `apellido` (requerido): Apellido del empleado.
     - `correoElectronico` (requerido): Correo electrónico del empleado.
     - `contrasenia` (requerido): Contraseña del empleado.
-
-- **PATCH /api/empleados/:idUsuario**
-  - Descripción: Actualizar un empleado por su ID.
-  - Parámetros:
-    - `idUsuario` (requerido): ID del empleado.
-  - Cuerpo de la solicitud:
-    - `nombre` (opcional): Nombre del empleado.
-    - `apellido` (opcional): Apellido del empleado.
-    - `correoElectronico` (opcional): Correo electrónico del empleado.
-    - `contrasenia` (opcional): Contraseña del empleado.
-
 
