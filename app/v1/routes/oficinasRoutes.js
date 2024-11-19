@@ -9,6 +9,9 @@ const router = express.Router()
 // Obtener todas las oficinas
 router.get('/', passport.authenticate("jwt", { session: false }), autorizarUsuarios([1]), oficinasController.obtenerTodos)
 
+// Obtener informe de usuarios por oficina
+router.get('/informe', passport.authenticate("jwt", { session: false }), autorizarUsuarios([1]), oficinasController.obtenerInforme)
+
 // Obtener una oficina por id
 router.get('/:idOficina', passport.authenticate("jwt", { session: false }), autorizarUsuarios([1]), oficinasController.obtenerPorId)
 

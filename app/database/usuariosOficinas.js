@@ -116,4 +116,23 @@ export default class UsuariosOficinas {
             };
         };
     }
+
+    obtenerEstadisticas = async () => {
+        try {
+            const sql = `SELECT o.nombre, COUNT(*) AS cantidadU 
+                        FROM usuarios_oficinas AS uo 
+                        INNER JOIN oficinas AS o ON uo.idOficina = o.idOficina 
+                        GROUP BY uo.idOficina ORDER BY cantidadU DESC;`;
+            const resultado = await conexion.query(sql);
+
+            const cantidad = resultado[0].length
+            const detalle = resultado[0]
+            return {cantidad, detalle}
+        } catch (error) {
+            return { 
+                estado: 500, 
+                mensaje: `Error en el servidor ${error}` 
+            };
+        }
+    }
 }

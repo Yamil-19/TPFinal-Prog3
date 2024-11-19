@@ -112,4 +112,17 @@ export default class OficinasController {
             });
         }
     }
+
+    obtenerInforme = async (req, res) => {
+        try {
+            const {buffer, path, headers} = await this.service.obtenerInforme();
+            res.set(headers)
+            res.status(200).end(buffer);
+        } catch (error) {
+            return res.status(error.estado || 500).json({ 
+                estado: error.estado || 500, 
+                data: { error: error.mensaje } 
+            });
+        }
+    }
 }

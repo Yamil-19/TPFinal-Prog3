@@ -100,7 +100,6 @@ export default class ReclamosController {
     informe = async (req, res) => {
         const formatosPermitidos = ['pdf', 'csv']
         try{
-
             const formato = req.query.formato.toLowerCase();
             
             if(!formato || !formatosPermitidos.includes(formato)){

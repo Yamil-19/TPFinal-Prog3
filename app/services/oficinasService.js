@@ -1,8 +1,8 @@
 import Oficinas from '../database/oficinas.js';
-// import EmpleadosService from './empleadosService.js';
 import ReclamosTiposService from './reclamosTiposService.js';
 import UsuariosService from './usuariosService.js';
 import UsuariosOficinas from '../database/usuariosOficinas.js';
+import InformeService from './informesService.js';
 
 import dotenv from 'dotenv';
 
@@ -14,6 +14,7 @@ export default class OficinasService {
         this.reclamosTipos = new ReclamosTiposService()
         this.usuarios = new UsuariosService()
         this.usuariosOficinas = new UsuariosOficinas()
+        this.informes = new InformeService()
     }
 
     obtenerTodos = async () => {
@@ -145,4 +146,30 @@ export default class OficinasService {
         }
         return resultado;
     };
+
+    obtenerInforme = async () => {
+        try {
+            const resultado = await this.usuariosOficinas.obtenerEstadisticas();
+            // const nombresOficinas = []
+            // resultado.detalle.forEach((oficina) => nombresOficinas.push(oficina.nombre))
+            // const cantidadUsuarios = []
+            // resultado.detalle.forEach((oficina) => cantidadUsuarios.push(oficina.cantidadU))
+            // const elpepe = {
+            //     cantidad: resultado.cantidad,
+            //     listaOfi: nombresOficinas,
+            //     listaCant: cantidadUsuarios
+            // }
+            const pdf = await this.informes.informeOficinasPdf(resultado)
+            
+            return {
+                buffer: pdf,
+                headers: {
+                    'Content-Type': 'application/pdf',
+                    'Content-Disposition': 'inline; filename="reportes.pdf"'
+                }
+            };
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
