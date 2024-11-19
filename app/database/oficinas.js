@@ -4,7 +4,10 @@ export default class Oficinas {
     
     obtenerTodos = async () => {
         try {
-            const sql = `SELECT o.idOficina, o.nombre, rt.descripcion FROM oficinas AS o INNER JOIN reclamos_tipo AS rt ON rt.idReclamoTipo = o.idReclamoTipo WHERE o.activo = 1`
+            const sql = `SELECT o.idOficina, o.nombre, rt.descripcion 
+            FROM oficinas AS o 
+            INNER JOIN reclamos_tipo AS rt ON rt.idReclamoTipo = o.idReclamoTipo 
+            WHERE o.activo = 1`
             const [resultado] = await conexion.query(sql)
 
             return resultado
@@ -19,7 +22,10 @@ export default class Oficinas {
     
     obtenerPorId = async (idOficina) => {
         try {
-            const sql = `SELECT o.idOficina, o.nombre, rt.descripcion FROM oficinas AS o INNER JOIN reclamos_tipo AS rt ON rt.idReclamoTipo = o.idReclamoTipo WHERE o.idOficina = ? AND o.activo = 1;`;
+            const sql = `SELECT o.idOficina, o.nombre, rt.descripcion 
+            FROM oficinas AS o 
+            INNER JOIN reclamos_tipo AS rt ON rt.idReclamoTipo = o.idReclamoTipo 
+            WHERE o.idOficina = ? AND o.activo = 1;`;
             const [resultado] = await conexion.query(sql, [idOficina]);
 
             if (resultado.length === 0) {

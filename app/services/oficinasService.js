@@ -150,15 +150,6 @@ export default class OficinasService {
     obtenerInforme = async () => {
         try {
             const resultado = await this.usuariosOficinas.obtenerEstadisticas();
-            // const nombresOficinas = []
-            // resultado.detalle.forEach((oficina) => nombresOficinas.push(oficina.nombre))
-            // const cantidadUsuarios = []
-            // resultado.detalle.forEach((oficina) => cantidadUsuarios.push(oficina.cantidadU))
-            // const elpepe = {
-            //     cantidad: resultado.cantidad,
-            //     listaOfi: nombresOficinas,
-            //     listaCant: cantidadUsuarios
-            // }
             const pdf = await this.informes.informeOficinasPdf(resultado)
             
             return {

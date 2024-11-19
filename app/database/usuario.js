@@ -4,7 +4,9 @@ import { conexion } from './conexion.js';
 export default class Usuarios {
     obtenerTodos = async (idUsuarioTipo) => {
         try {
-            let sql = `SELECT idUsuario, CONCAT(nombre, ' ', apellido) AS 'nombre completo', correoElectronico FROM usuarios WHERE activo = 1 `;
+            let sql = `SELECT idUsuario, CONCAT(nombre, ' ', apellido) AS 'nombre completo', correoElectronico 
+            FROM usuarios 
+            WHERE activo = 1 `;
             if (idUsuarioTipo === 2)
                 sql += `AND idUsuarioTipo = ?`
             const [resultado] = await conexion.query(sql, [idUsuarioTipo]);
@@ -20,7 +22,9 @@ export default class Usuarios {
     
     obtenerPorId = async (idUsuario, idUsuarioTipo) => {
         try {
-            let sql = `SELECT u.idUsuario, CONCAT(u.nombre, ' ', u.apellido) as usuario, u.idUsuarioTipo, u.correoElectronico FROM usuarios AS u WHERE u.idUsuario = ? AND activo = 1 `;
+            let sql = `SELECT u.idUsuario, CONCAT(u.nombre, ' ', u.apellido) as usuario, u.idUsuarioTipo, u.correoElectronico 
+            FROM usuarios AS u 
+            WHERE u.idUsuario = ? AND activo = 1 `;
             if (idUsuarioTipo)
                 sql += `AND u.idUsuarioTipo = ?`
             const [resultado] = await conexion.query(sql, [idUsuario, idUsuarioTipo]);
@@ -41,7 +45,8 @@ export default class Usuarios {
 
     agregar = async (datos) => {
         try {
-            const sql = `INSERT INTO usuarios (nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, activo) VALUES (?,?,?,?,?,1);`;
+            const sql = `INSERT INTO usuarios (nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, activo) 
+                        VALUES (?,?,?,?,?,1);`;
             const [resultado] = await conexion.query(sql, [datos.nombre, datos.apellido, datos.correoElectronico, datos.contrasenia, datos.idUsuarioTipo]);
 
             if (resultado.affectedRows === 0) {

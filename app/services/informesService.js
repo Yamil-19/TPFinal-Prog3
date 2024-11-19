@@ -46,7 +46,7 @@ export default class InformeService {
             ctx.fillRect(legendX, legendY, 20, 20); 
             
             ctx.fillStyle = 'black'; 
-            ctx.font = '16px Arial'; 
+            ctx.font = '16px Trebuchet MS'; 
             ctx.fillText(slice.nombre, legendX + 30, legendY + 16);
         });
         
@@ -138,35 +138,4 @@ export default class InformeService {
             throw error;
         }
     }
-
-    // informeOficinasPdf = async (datosReporte) => {
-    //     try{
-    //         const filePath = path.join(__dirname, '../pages/handlebars/informeOficinas.hbs');
-    //         const htmlTemplate = fs.readFileSync(filePath, 'utf8');
-
-    //         const template = handlebars.compile(htmlTemplate);
-    //         const htmlFinal = template(datosReporte);
-
-    //         const browser = await puppeteer.launch();
-
-    //         const page = await browser.newPage();
-
-    //         await page.setContent(htmlFinal, {waitUntil: 'load'});
-
-    //         const pdfBuffer = await page.pdf({
-    //             format:'A4',
-    //             printBackground: true,
-    //             margin: {top: '10px', bottom: '10px', left: '50px', right: '50px' }
-    //         });
-
-    //         await browser.close();
-
-    //         return pdfBuffer;
-
-    //     }catch(error){
-    //         console.error('Error generando el PDF:', error);
-    //         throw error;
-    //     }
-    // }
-
 }
