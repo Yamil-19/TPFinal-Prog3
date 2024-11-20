@@ -79,6 +79,9 @@ La aplicación utiliza las siguientes tecnologías y librerías:
 - **GET /api/oficinas**
   - Descripción: Obtener todas las oficinas.
 
+- **GET /api/oficinas/informe**
+  - Descripción: Obtener el informe de cantidad de usuarios por oficina.
+
 - **GET /api/oficinas/:idOficina**
   - Descripción: Obtener una oficina por su ID.
   - Parámetros:
